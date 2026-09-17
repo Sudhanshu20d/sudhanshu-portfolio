@@ -49,77 +49,134 @@ class GitHubSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(22),
               border: Border.all(color: AppColors.border, width: 1.2),
             ),
-            child: Row(
-              children: [
-                // Avatar
-                Container(
-                  width: isMobile ? 64 : 80,
-                  height: isMobile ? 64 : 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.accent, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.accent.withValues(alpha: 0.2),
-                        blurRadius: 16,
-                      ),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      PortfolioData.githubAvatarAsset,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.person,
-                        color: AppColors.accent,
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 20),
-
-                // Info
-                Expanded(
-                  child: Column(
+            child: isMobile
+                ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            PortfolioData.githubUsername,
-                            style: AppTypography.cardTitle(fontSize: isMobile ? 18 : 22),
+                          // Avatar
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.accent, width: 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.accent.withValues(alpha: 0.2),
+                                  blurRadius: 14,
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                PortfolioData.githubAvatarAsset,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => const Icon(
+                                  Icons.person,
+                                  color: AppColors.accent,
+                                  size: 36,
+                                ),
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 10),
-                          const LuxuryBadge(
-                            label: 'GITHUB PROFILE',
-                            dotColor: AppColors.accent,
-                            backgroundColor: Color(0x18A88CFF),
-                            borderColor: Color(0x40A88CFF),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              PortfolioData.githubUsername,
+                              style: AppTypography.cardTitle(fontSize: 20),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 14),
                       Text(
                         '🚀 App Developer | Flutter • Dart • Android\nPassionate about building fast, modern, and elegant mobile experiences.',
                         style: AppTypography.bodySmall(color: AppColors.textMuted),
                       ),
+                      const SizedBox(height: 14),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: LuxuryBadge(
+                          label: 'GITHUB PROFILE',
+                          dotColor: AppColors.accent,
+                          backgroundColor: Color(0x18A88CFF),
+                          borderColor: Color(0x40A88CFF),
+                        ),
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      // Avatar
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.accent, width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.accent.withValues(alpha: 0.2),
+                              blurRadius: 16,
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            PortfolioData.githubAvatarAsset,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => const Icon(
+                              Icons.person,
+                              color: AppColors.accent,
+                              size: 40,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+
+                      // Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  PortfolioData.githubUsername,
+                                  style: AppTypography.cardTitle(fontSize: 22),
+                                ),
+                                const SizedBox(width: 10),
+                                const LuxuryBadge(
+                                  label: 'GITHUB PROFILE',
+                                  dotColor: AppColors.accent,
+                                  backgroundColor: Color(0x18A88CFF),
+                                  borderColor: Color(0x40A88CFF),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              '🚀 App Developer | Flutter • Dart • Android\nPassionate about building fast, modern, and elegant mobile experiences.',
+                              style: AppTypography.bodySmall(color: AppColors.textMuted),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 24),
+                      MagneticButton(
+                        text: 'View GitHub Profile',
+                        icon: Icons.open_in_new_rounded,
+                        isSmall: true,
+                        style: MagneticButtonStyle.primary,
+                        onTap: () => _launchUrl(PortfolioData.githubUrl),
+                      ),
                     ],
                   ),
-                ),
-
-                if (!isMobile) ...[
-                  const SizedBox(width: 24),
-                  MagneticButton(
-                    text: 'View GitHub Profile',
-                    icon: Icons.open_in_new_rounded,
-                    isSmall: true,
-                    style: MagneticButtonStyle.primary,
-                    onTap: () => _launchUrl(PortfolioData.githubUrl),
-                  ),
-                ],
-              ],
-            ),
           ),
 
           if (isMobile) ...[

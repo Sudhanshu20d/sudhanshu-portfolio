@@ -192,7 +192,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 controller: _scrollController,
                 child: Column(
                   children: [
-                    SizedBox(height: isMobile ? MediaQuery.of(context).padding.top + 60 : 76),
+                    SizedBox(height: isMobile ? MediaQuery.of(context).padding.top + 64 : 76),
 
                     // 00. Hero Section
                     Container(

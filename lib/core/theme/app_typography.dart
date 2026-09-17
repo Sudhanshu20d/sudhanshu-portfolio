@@ -76,6 +76,7 @@ class AppTypography {
       fontWeight: fontWeight,
       color: color,
       letterSpacing: 1.0,
+      height: 1.0,
     );
   }
 

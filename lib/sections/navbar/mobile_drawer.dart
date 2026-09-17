@@ -37,7 +37,7 @@ class MobileNavbar extends StatelessWidget {
           child: SafeArea(
             bottom: false,
             child: Container(
-              height: 60, // Proper comfortable navbar content height
+              height: 64, // Fixed navbar content height for 52x52 logo
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -47,22 +47,24 @@ class MobileNavbar extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF14141A),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.borderLight, width: 1),
-                          ),
-                          child: Center(
+                        SizedBox(
+                          width: 52,
+                          height: 52,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF14141A),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: AppColors.borderLight, width: 1),
+                            ),
+                            alignment: Alignment.center,
                             child: Text(
                               PortfolioData.monogram,
                               style: AppTypography.monoNumber(
-                                fontSize: 14,
+                                fontSize: 18,
                                 color: AppColors.textPrimary,
                                 fontWeight: FontWeight.w700,
-                              ),
+                              ).copyWith(height: 1.0),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),

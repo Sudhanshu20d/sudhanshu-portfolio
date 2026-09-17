@@ -20,6 +20,7 @@ class PortfolioData {
   static const String githubUrl = 'https://github.com/Sudhanshu20d';
   static const String linkedinUrl = 'https://www.linkedin.com/in/sudhanshu-singh-0a4822278/';
   static const String instagramUrl = 'https://www.instagram.com/Shudhanshu_sd/';
+  static const String twitterUrl = 'https://x.com/shudhanshu_sd?s=11';
 
   // Images
   static const String portraitAsset = 'assets/images/portrait/sudhanshu.jpg';

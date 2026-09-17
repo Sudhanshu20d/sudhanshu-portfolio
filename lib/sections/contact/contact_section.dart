@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import '../../core/widgets/magnetic_button.dart';
 
 class ContactSection extends StatefulWidget {
   const ContactSection({super.key});
@@ -55,7 +55,7 @@ class _ContactSectionState extends State<ContactSection> {
       ),
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 24.0 : 56.0,
+          horizontal: isMobile ? 20.0 : 56.0,
           vertical: isMobile ? 40.0 : 64.0,
         ),
         decoration: BoxDecoration(
@@ -92,7 +92,7 @@ class _ContactSectionState extends State<ContactSection> {
             ),
             const SizedBox(height: 24),
 
-            // Huge editorial headline
+            // Editorial headline
             Text(
               "LET'S BUILD\nSOMETHING WORTH\nSHIPPING.",
               style: AppTypography.heroTitle(
@@ -119,7 +119,10 @@ class _ContactSectionState extends State<ContactSection> {
               child: GestureDetector(
                 onTap: _copyEmail,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 20,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF161622),
                     borderRadius: BorderRadius.circular(14),
@@ -136,26 +139,31 @@ class _ContactSectionState extends State<ContactSection> {
                         size: 18,
                         color: _copied ? AppColors.liveGreen : AppColors.accent,
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        PortfolioData.email,
-                        style: AppTypography.monoLabel(
-                          fontSize: isMobile ? 12 : 14,
-                          color: AppColors.textPrimary,
-                        ).copyWith(fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(width: 16),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0x20A88CFF),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
+                      const SizedBox(width: 10),
+                      Flexible(
                         child: Text(
-                          _copied ? 'COPIED!' : 'CLICK TO COPY',
-                          style: AppTypography.monoLabel(fontSize: 10, color: AppColors.accent),
+                          PortfolioData.email,
+                          style: AppTypography.monoLabel(
+                            fontSize: isMobile ? 12 : 14,
+                            color: AppColors.textPrimary,
+                          ).copyWith(fontWeight: FontWeight.w600),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      if (!isMobile) ...[
+                        const SizedBox(width: 16),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: const Color(0x20A88CFF),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            _copied ? 'COPIED!' : 'CLICK TO COPY',
+                            style: AppTypography.monoLabel(fontSize: 10, color: AppColors.accent),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -164,38 +172,161 @@ class _ContactSectionState extends State<ContactSection> {
 
             const SizedBox(height: 36),
 
-            // Social Morphing Buttons
-            Wrap(
-              spacing: 14,
-              runSpacing: 12,
-              children: [
-                MagneticButton(
-                  text: 'GitHub',
-                  icon: Icons.code,
-                  style: MagneticButtonStyle.primary,
-                  onTap: () => _launchUrl(PortfolioData.githubUrl),
-                ),
-                MagneticButton(
-                  text: 'LinkedIn',
-                  icon: Icons.work_outline,
-                  style: MagneticButtonStyle.secondary,
-                  onTap: () => _launchUrl(PortfolioData.linkedinUrl),
-                ),
-                MagneticButton(
-                  text: 'Instagram',
-                  icon: Icons.camera_alt_outlined,
-                  style: MagneticButtonStyle.secondary,
-                  onTap: () => _launchUrl(PortfolioData.instagramUrl),
-                ),
-                MagneticButton(
-                  text: 'Send Direct Email',
-                  icon: Icons.arrow_outward_rounded,
-                  style: MagneticButtonStyle.outline,
-                  onTap: () => _launchUrl('mailto:${PortfolioData.email}'),
-                ),
-              ],
+            // Official Social Links (GitHub, LinkedIn, Instagram, X)
+            Text(
+              'CONNECT',
+              style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textMuted),
             ),
+            const SizedBox(height: 12),
+
+            if (isMobile)
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _SocialButton(
+                          label: 'GitHub',
+                          icon: FontAwesomeIcons.github,
+                          isMobile: true,
+                          onTap: () => _launchUrl(PortfolioData.githubUrl),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _SocialButton(
+                          label: 'LinkedIn',
+                          icon: FontAwesomeIcons.linkedin,
+                          isMobile: true,
+                          onTap: () => _launchUrl(PortfolioData.linkedinUrl),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _SocialButton(
+                          label: 'Instagram',
+                          icon: FontAwesomeIcons.instagram,
+                          isMobile: true,
+                          onTap: () => _launchUrl(PortfolioData.instagramUrl),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _SocialButton(
+                          label: 'X (Twitter)',
+                          icon: FontAwesomeIcons.xTwitter,
+                          isMobile: true,
+                          onTap: () => _launchUrl(PortfolioData.twitterUrl),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            else
+              Wrap(
+                spacing: 14,
+                runSpacing: 12,
+                children: [
+                  _SocialButton(
+                    label: 'GitHub',
+                    icon: FontAwesomeIcons.github,
+                    onTap: () => _launchUrl(PortfolioData.githubUrl),
+                  ),
+                  _SocialButton(
+                    label: 'LinkedIn',
+                    icon: FontAwesomeIcons.linkedin,
+                    onTap: () => _launchUrl(PortfolioData.linkedinUrl),
+                  ),
+                  _SocialButton(
+                    label: 'Instagram',
+                    icon: FontAwesomeIcons.instagram,
+                    onTap: () => _launchUrl(PortfolioData.instagramUrl),
+                  ),
+                  _SocialButton(
+                    label: 'X (Twitter)',
+                    icon: FontAwesomeIcons.xTwitter,
+                    onTap: () => _launchUrl(PortfolioData.twitterUrl),
+                  ),
+                ],
+              ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SocialButton extends StatefulWidget {
+  final String label;
+  final FaIconData icon;
+  final VoidCallback onTap;
+  final bool isMobile;
+
+  const _SocialButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.isMobile = false,
+  });
+
+  @override
+  State<_SocialButton> createState() => _SocialButtonState();
+}
+
+class _SocialButtonState extends State<_SocialButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: _isHovered ? AppColors.accent.withValues(alpha: 0.14) : const Color(0xFF161622),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _isHovered ? AppColors.accent : AppColors.border,
+              width: 1.2,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: widget.isMobile ? MainAxisSize.max : MainAxisSize.min,
+            children: [
+              FaIcon(
+                widget.icon,
+                size: 16,
+                color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  widget.label,
+                  style: AppTypography.buttonText(
+                    color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                  ).copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
