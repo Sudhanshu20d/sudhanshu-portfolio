@@ -120,12 +120,17 @@ class _HeroSectionState extends State<HeroSection> with TickerProviderStateMixin
                 opacity: _contentFadeIn.value,
                 child: Transform.translate(
                   offset: Offset(0, _nameSlide.value),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: isMobile ? 24.0 : 54.0,
-                      vertical: isMobile ? 32.0 : 20.0,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: isMobile ? 24.0 : 54.0,
+                        right: isMobile ? 24.0 : 54.0,
+                        top: isMobile ? 32.0 : 64.0,
+                        bottom: isMobile ? 32.0 : 20.0,
+                      ),
+                      child: isMobile ? _buildMobileLayout(size) : _buildDesktopLayout(size),
                     ),
-                    child: isMobile ? _buildMobileLayout(size) : _buildDesktopLayout(size),
                   ),
                 ),
               );
@@ -334,8 +339,6 @@ class _HeroSectionState extends State<HeroSection> with TickerProviderStateMixin
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 20),
-
         // Metadata Pills
         Wrap(
           spacing: 6,
@@ -352,15 +355,24 @@ class _HeroSectionState extends State<HeroSection> with TickerProviderStateMixin
 
         const SizedBox(height: 24),
 
-        // Mobile Typography (Never covered by portrait)
-        Text(
-          'SUDHANSHU',
-          style: AppTypography.heroTitle(fontSize: 52, italic: false),
-        ),
-        Text(
-          'SINGH',
-          style: AppTypography.heroTitle(fontSize: 52, italic: true)
-              .copyWith(color: AppColors.accent),
+        // Mobile Typography (Never covered by portrait, scales perfectly)
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'SUDHANSHU',
+                style: AppTypography.heroTitle(fontSize: 52, italic: false),
+              ),
+              Text(
+                'SINGH',
+                style: AppTypography.heroTitle(fontSize: 52, italic: true)
+                    .copyWith(color: AppColors.accent),
+              ),
+            ],
+          ),
         ),
 
         const SizedBox(height: 14),
@@ -401,7 +413,7 @@ class _HeroSectionState extends State<HeroSection> with TickerProviderStateMixin
           child: _buildPortraitWidget(
             mouseOffsetX: 0,
             mouseOffsetY: 0,
-            width: math.min(size.width - 48, 340),
+            width: math.min(size.width - 48, 340), // 24px padding on each side
             height: math.min(size.width - 48, 340) * 1.25,
           ),
         ),

@@ -44,6 +44,11 @@ class _Tilt3DCardState extends State<Tilt3DCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 960;
+    if (isMobile) {
+      return widget.child;
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxHeight);

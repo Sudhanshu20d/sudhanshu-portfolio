@@ -20,8 +20,6 @@ class MobileNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: isScrolled ? AppColors.surfaceGlass : Colors.transparent,
         border: Border(
@@ -36,60 +34,78 @@ class MobileNavbar extends StatelessWidget {
           filter: isScrolled
               ? ImageFilter.blur(sigmaX: 16, sigmaY: 16)
               : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Monogram SD
-              Row(
-                mainAxisSize: MainAxisSize.min,
+          child: SafeArea(
+            bottom: false,
+            child: Container(
+              height: 60, // Proper comfortable navbar content height
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF14141A),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.borderLight, width: 1),
+                  // Left Side: Branding
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF14141A),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: AppColors.borderLight, width: 1),
+                          ),
+                          child: Center(
+                            child: Text(
+                              PortfolioData.monogram,
+                              style: AppTypography.monoNumber(
+                                fontSize: 14,
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            'SUDHANSHU',
+                            style: AppTypography.monoLabel(fontSize: 13, color: AppColors.textPrimary)
+                                .copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Center(
-                      child: Text(
-                        PortfolioData.monogram,
-                        style: AppTypography.monoNumber(
-                          fontSize: 13,
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w700,
+                  ),
+
+                  // Right Side: Actions
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MagneticButton(
+                        text: 'CV',
+                        icon: Icons.download_rounded,
+                        isSmall: true,
+                        style: MagneticButtonStyle.outline,
+                        onTap: onResumeTap,
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: onOpenMenu,
+                          icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 28),
+                          splashRadius: 22,
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'SUDHANSHU',
-                    style: AppTypography.monoLabel(fontSize: 12, color: AppColors.textPrimary)
-                        .copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),
+                    ],
                   ),
                 ],
               ),
-
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  MagneticButton(
-                    text: 'CV',
-                    icon: Icons.download_rounded,
-                    isSmall: true,
-                    style: MagneticButtonStyle.outline,
-                    onTap: onResumeTap,
-                  ),
-                  const SizedBox(width: 12),
-                  IconButton(
-                    onPressed: onOpenMenu,
-                    icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 26),
-                    splashRadius: 22,
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ),

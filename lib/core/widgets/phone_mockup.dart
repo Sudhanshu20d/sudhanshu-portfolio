@@ -191,27 +191,28 @@ class _PhoneMockupState extends State<PhoneMockup> {
       );
     }
 
-    return ListView.builder(
+    return SingleChildScrollView(
       controller: _scrollController,
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
-      itemCount: widget.screenshots.length,
-      itemBuilder: (context, index) {
-        return Image.asset(
-          widget.screenshots[index],
-          fit: BoxFit.cover,
-          width: widget.width,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              height: 400,
-              color: const Color(0xFF16161D),
-              child: const Center(
-                child: Icon(Icons.image_outlined, color: AppColors.textDim, size: 36),
-              ),
-            );
-          },
-        );
-      },
+      child: Column(
+        children: widget.screenshots.map((screenshot) {
+          return Image.asset(
+            screenshot,
+            fit: BoxFit.cover,
+            width: widget.width,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                height: 400,
+                color: const Color(0xFF16161D),
+                child: const Center(
+                  child: Icon(Icons.image_outlined, color: AppColors.textDim, size: 36),
+                ),
+              );
+            },
+          );
+        }).toList(),
+      ),
     );
   }
 

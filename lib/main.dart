@@ -177,13 +177,14 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         child: Stack(
           children: [
             // Moving editorial grid and ambient spotlight background
-            Positioned.fill(
-              child: CustomPaint(
-                painter: BackgroundGridPainter(
-                  mousePosition: _mousePosition,
+            if (!isMobile)
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: BackgroundGridPainter(
+                    mousePosition: _mousePosition,
+                  ),
                 ),
               ),
-            ),
 
             // Scrollable Content
             Positioned.fill(
@@ -191,7 +192,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 controller: _scrollController,
                 child: Column(
                   children: [
-                    SizedBox(height: isMobile ? 64 : 76),
+                    SizedBox(height: isMobile ? MediaQuery.of(context).padding.top + 60 : 76),
 
                     // 00. Hero Section
                     Container(

@@ -34,17 +34,82 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <style>
     body {
       background-color: #09090B;
       margin: 0;
       padding: 0;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .monogram-box {
+      width: 58px;
+      height: 58px;
+      background-color: #16161F;
+      border-radius: 14px;
+      border: 1.5px solid #A88CFF;
+      box-shadow: 0 0 20px rgba(168, 140, 255, 0.35);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #FFFFFF;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.95); }
     }
   </style>
+  <script>
+    window.addEventListener('load', function(ev) {
+      // Customize flutter web bootstrap to hide the default loading indicator
+      _flutter.buildConfig = {
+        builds: [
+          {
+            compileTarget: "dart2wasm",
+            renderer: "skwasm",
+            mainWasmPath: "main.dart.wasm",
+            jsAppPath: "main.dart.mjs",
+          },
+          {
+            compileTarget: "dart2js",
+            renderer: "canvaskit",
+            mainJsPath: "main.dart.js",
+          },
+        ],
+      };
+      // Download main.dart.js
+      _flutter.loader.load({
+        onEntrypointLoaded: async function(engineInitializer) {
+          const appRunner = await engineInitializer.initializeEngine();
+          
+          // Remove custom loading screen
+          document.getElementById('loading-screen')?.remove();
+          
+          await appRunner.runApp();
+        }
+      });
+    });
+  </script>
 </head>
 <body style="background-color: #09090B;">
+  <div id="loading-screen" class="loading-container">
+    <div class="monogram-box">SD</div>
+  </div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
