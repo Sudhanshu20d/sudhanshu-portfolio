@@ -20,7 +20,7 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Sudhanshu Singh — Flutter Developer • Mobile App Developer. Handcrafted production mobile applications. Vapi, Gujarat, India.">
-  <meta name="theme-color" content="#09090B">
+  <meta name="theme-color" content="#09090A">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -43,11 +43,11 @@
     html {
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
-      background-color: #09090B;
+      background-color: #09090A;
       height: 100%;
     }
     body {
-      background-color: #09090B;
+      background-color: #09090A;
       margin: 0;
       padding: 0;
       width: 100%;
@@ -70,7 +70,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background-color: #09090B;
+      background-color: #09090A;
       z-index: 999999;
       pointer-events: none;
       opacity: 1;
@@ -80,75 +80,149 @@
       opacity: 0;
       pointer-events: none;
     }
-    .monogram-box {
-      width: 80px;
-      height: 80px;
-      min-width: 80px;
-      min-height: 80px;
-      max-width: 80px;
-      max-height: 80px;
-      flex-shrink: 0;
-      background-color: #14141A;
-      border-radius: 18px;
-      border: 1.5px solid rgba(168, 140, 255, 0.65);
-      box-shadow: 0 0 24px rgba(168, 140, 255, 0.35);
+    .brand-intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .brand-monogram {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      color: #F3F1EB;
+      line-height: 1;
+      letter-spacing: -2px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #F6F4EF;
-      font-family: 'IBM Plex Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
-      font-size: 28px;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      margin: 0 0 22px 0;
+    }
+    .letter-s {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(6px);
+      animation: revealS 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+    }
+    .letter-d {
+      display: inline-block;
+      opacity: 0;
+      transform: translateX(8px);
+      animation: revealD 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+    }
+    @keyframes revealS {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes revealD {
+      from {
+        opacity: 0;
+        transform: translateX(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    .brand-line-track {
+      width: 72px;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.06);
+      position: relative;
+      overflow: hidden;
       margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-      white-space: nowrap;
-      animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .brand-line-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #D2F832;
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: fillLine 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+    }
+    @keyframes fillLine {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
     }
     @media (min-width: 768px) {
-      .monogram-box {
+      .brand-monogram {
+        font-size: 68px;
+        letter-spacing: -2.5px;
+        margin-bottom: 26px;
+      }
+      .brand-line-track {
         width: 88px;
-        height: 88px;
-        min-width: 88px;
-        min-height: 88px;
-        max-width: 88px;
-        max-height: 88px;
-        border-radius: 20px;
-        border: 1.5px solid rgba(168, 140, 255, 0.75);
-        box-shadow: 0 0 32px rgba(168, 140, 255, 0.4);
-        font-size: 32px;
-      }
-    }
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-      50% {
-        opacity: 0.75;
-        transform: scale(0.96);
       }
     }
   </style>
   <script>
-    // Failsafe listener for flutter first frame
-    window.addEventListener('flutter-first-frame', function() {
-      var loader = document.getElementById('loading-screen');
-      if (loader && !loader.classList.contains('fade-out')) {
-        loader.classList.add('fade-out');
-        setTimeout(function() {
-          loader.remove();
-        }, 400);
+    window.animationDone = false;
+    window.flutterAppReady = false;
+
+    function checkFadeOut() {
+      if (window.animationDone && window.flutterAppReady) {
+        var loader = document.getElementById('loading-screen');
+        if (loader && !loader.classList.contains('fade-out')) {
+          loader.classList.add('fade-out');
+          setTimeout(function() {
+            if (loader.parentNode) {
+              loader.parentNode.removeChild(loader);
+            }
+          }, 400);
+        }
       }
+    }
+
+    // Reveal and fill animation completes at ~1000ms
+    setTimeout(function() {
+      window.animationDone = true;
+      checkFadeOut();
+    }, 1000);
+
+    // Flutter readiness hooks
+    window.notifyFlutterReady = function() {
+      window.flutterAppReady = true;
+      checkFadeOut();
+    };
+
+    window.addEventListener('flutter-first-frame', function() {
+      window.flutterAppReady = true;
+      checkFadeOut();
     });
+
+    // Failsafe timeout so the loader never remains stuck indefinitely
+    setTimeout(function() {
+      window.animationDone = true;
+      window.flutterAppReady = true;
+      checkFadeOut();
+    }, 4500);
   </script>
 </head>
-<body style="background-color: #09090B;">
+<body style="background-color: #09090A;">
   <div id="loading-screen">
-    <div class="monogram-box">SD</div>
+    <div class="brand-intro">
+      <div class="brand-monogram">
+        <span class="letter-s">S</span><span class="letter-d">D</span>
+      </div>
+      <div class="brand-line-track">
+        <div class="brand-line-fill"></div>
+      </div>
+    </div>
   </div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
