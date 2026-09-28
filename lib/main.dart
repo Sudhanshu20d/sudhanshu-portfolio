@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'core/animations/cursor_spotlight.dart';
+import 'core/animations/marquee_strip.dart';
 import 'core/constants/portfolio_data.dart';
 import 'core/theme/app_colors.dart';
 import 'core/widgets/resume_modal.dart';
@@ -14,7 +15,6 @@ import 'sections/navbar/desktop_navbar.dart';
 import 'sections/navbar/mobile_drawer.dart';
 import 'sections/projects/featured_projects.dart';
 import 'sections/projects/private_projects.dart';
-import 'sections/skills/skills_section.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,11 +56,10 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
 
   // Global Keys for smooth scrolling
   final GlobalKey _heroKey = GlobalKey();
+  final GlobalKey _appsKey = GlobalKey();
+  final GlobalKey _projectsKey = GlobalKey();
   final GlobalKey _aboutKey = GlobalKey();
   final GlobalKey _experienceKey = GlobalKey();
-  final GlobalKey _skillsKey = GlobalKey();
-  final GlobalKey _projectsKey = GlobalKey();
-  final GlobalKey _githubKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
 
   @override
@@ -87,18 +86,16 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
 
   void _detectActiveSection() {
     final offset = _scrollController.offset;
-    if (offset < 400) {
+    if (offset < 500) {
       if (_activeSection != 'hero') setState(() => _activeSection = 'hero');
-    } else if (offset < 1000) {
-      if (_activeSection != 'about') setState(() => _activeSection = 'about');
-    } else if (offset < 1700) {
-      if (_activeSection != 'experience') setState(() => _activeSection = 'experience');
+    } else if (offset < 1500) {
+      if (_activeSection != 'apps') setState(() => _activeSection = 'apps');
     } else if (offset < 2400) {
-      if (_activeSection != 'skills') setState(() => _activeSection = 'skills');
-    } else if (offset < 3600) {
       if (_activeSection != 'projects') setState(() => _activeSection = 'projects');
-    } else if (offset < 4500) {
-      if (_activeSection != 'github') setState(() => _activeSection = 'github');
+    } else if (offset < 3200) {
+      if (_activeSection != 'about') setState(() => _activeSection = 'about');
+    } else if (offset < 4000) {
+      if (_activeSection != 'experience') setState(() => _activeSection = 'experience');
     } else {
       if (_activeSection != 'contact') setState(() => _activeSection = 'contact');
     }
@@ -110,20 +107,17 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       case 'hero':
         targetKey = _heroKey;
         break;
+      case 'apps':
+        targetKey = _appsKey;
+        break;
+      case 'projects':
+        targetKey = _projectsKey;
+        break;
       case 'about':
         targetKey = _aboutKey;
         break;
       case 'experience':
         targetKey = _experienceKey;
-        break;
-      case 'skills':
-        targetKey = _skillsKey;
-        break;
-      case 'projects':
-        targetKey = _projectsKey;
-        break;
-      case 'github':
-        targetKey = _githubKey;
         break;
       case 'contact':
         targetKey = _contactKey;
@@ -192,53 +186,53 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 controller: _scrollController,
                 child: Column(
                   children: [
-                    SizedBox(height: isMobile ? MediaQuery.of(context).padding.top + 64 : 76),
+                    SizedBox(height: isMobile ? MediaQuery.of(context).padding.top + 64 : 72),
 
-                    // 00. Hero Section
+                    // Hero Section / Index
                     Container(
                       key: _heroKey,
                       child: HeroSection(
                         mousePosition: _mousePosition,
-                        onViewProjectsTap: () => _scrollToSection('projects'),
+                        onViewProjectsTap: () => _scrollToSection('apps'),
                         onResumeTap: () => ResumeModal.show(context),
                         onGithubTap: () => _launchUrl(PortfolioData.githubUrl),
                       ),
                     ),
 
-                    // 01. About Section
+                    // Subtle Editorial Marquee Strip
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24.0),
+                      child: MarqueeStrip(items: PortfolioData.marqueeSkills),
+                    ),
+
+                    // 01. Apps (Vapi Startup Community, Bhajan & Kirtan)
+                    Container(
+                      key: _appsKey,
+                      child: const FeaturedProjectsSection(),
+                    ),
+
+                    // 02. Selected Projects (Animal Pop Kids, CRM365, Saifee Milk)
+                    Container(
+                      key: _projectsKey,
+                      child: const PrivateProjectsSection(),
+                    ),
+
+                    // 03. About Section
                     Container(
                       key: _aboutKey,
                       child: const AboutSection(),
                     ),
 
-                    // 02. Experience Section
+                    // 04. Experience Section
                     Container(
                       key: _experienceKey,
                       child: const ExperienceSection(),
                     ),
 
-                    // 03. Skills Section
-                    Container(
-                      key: _skillsKey,
-                      child: const SkillsSection(),
-                    ),
+                    // 05. GitHub Section (Terminal CLI view)
+                    const GitHubSection(),
 
-                    // 04. Featured Projects (Published Google Play Apps)
-                    Container(
-                      key: _projectsKey,
-                      child: const FeaturedProjectsSection(),
-                    ),
-
-                    // 05. Private Work (Commercial & Internal Apps)
-                    const PrivateProjectsSection(),
-
-                    // 06. GitHub Section (Verified Public Repositories)
-                    Container(
-                      key: _githubKey,
-                      child: const GitHubSection(),
-                    ),
-
-                    // 07. Contact Section
+                    // 06. Contact Section
                     Container(
                       key: _contactKey,
                       child: const ContactSection(),
@@ -247,28 +241,27 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                     // Footer
                     FooterSection(
                       onScrollToTop: _scrollToTop,
+                      onNavTap: _scrollToSection,
                     ),
                   ],
                 ),
               ),
             ),
 
-            // Top Reading Progress Line (Minimal luxury indicator)
+            // Top Reading Progress Line (Minimal indicator)
             Positioned(
               top: 0,
               left: 0,
               right: 0,
               child: Container(
-                height: 2.5,
+                height: 2.0,
                 color: Colors.transparent,
                 child: FractionallySizedBox(
                   alignment: Alignment.centerLeft,
                   widthFactor: _scrollProgress,
                   child: Container(
                     decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppColors.secondaryAccent, AppColors.accent],
-                      ),
+                      color: AppColors.accent,
                     ),
                   ),
                 ),
@@ -277,7 +270,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
 
             // Top Fixed Navbar
             Positioned(
-              top: 2.5,
+              top: 2.0,
               left: 0,
               right: 0,
               child: isMobile

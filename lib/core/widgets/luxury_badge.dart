@@ -21,10 +21,10 @@ class LuxuryBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(color: borderColor, width: 1),
       ),
       child: Row(
@@ -32,30 +32,26 @@ class LuxuryBadge extends StatelessWidget {
         children: [
           if (dotColor != null) ...[
             Container(
-              width: 6,
-              height: 6,
+              width: 5,
+              height: 5,
               decoration: BoxDecoration(
                 color: dotColor,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: dotColor!.withValues(alpha: 0.6),
-                    blurRadius: 6,
-                    spreadRadius: 1,
-                  ),
-                ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 7),
           ],
           if (icon != null) ...[
-            Icon(icon, size: 12, color: AppColors.accent),
-            const SizedBox(width: 6),
+            Icon(icon, size: 11, color: AppColors.accent),
+            const SizedBox(width: 5),
           ],
-          Text(
-            label,
-            style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textPrimary)
-                .copyWith(fontWeight: FontWeight.w500),
+          Flexible(
+            child: Text(
+              label.toUpperCase(),
+              style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textPrimary)
+                  .copyWith(fontWeight: FontWeight.w500, letterSpacing: 0.8),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),

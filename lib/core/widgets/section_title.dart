@@ -27,36 +27,52 @@ class SectionTitle extends StatelessWidget {
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Top Hairline Rule
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: AppColors.hairline,
+        ),
+        SizedBox(height: isMobile ? 24 : 36),
+
+        // Editorial Heading: e.g. "02  Selected projects"
         Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 18,
-              height: 1,
-              color: AppColors.accent,
-            ),
-            const SizedBox(width: 8),
             Text(
               number,
-              style: AppTypography.monoNumber(fontSize: 13, color: AppColors.accent),
+              style: AppTypography.monoNumber(
+                fontSize: isMobile ? 13 : 16,
+                color: AppColors.accent,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(width: isMobile ? 12 : 18),
+            Flexible(
+              child: Text(
+                title,
+                style: AppTypography.sectionTitle(
+                  fontSize: isMobile ? (screenWidth < 360 ? 30 : 38) : 56,
+                  italic: isItalic,
+                ),
+              ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Text(
-          title,
-          style: AppTypography.sectionTitle(
-            fontSize: isMobile ? 34 : 46,
-            italic: isItalic,
-          ),
-        ),
+
+        // Editorial Subtitle
         if (subtitle != null) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 620),
+            constraints: const BoxConstraints(maxWidth: 680),
             child: Text(
               subtitle!,
-              style: AppTypography.bodyMedium(color: AppColors.textMuted),
+              style: AppTypography.bodyLarge(
+                color: AppColors.textMuted,
+                height: 1.6,
+              ),
             ),
           ),
         ],

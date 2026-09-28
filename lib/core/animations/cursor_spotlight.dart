@@ -39,11 +39,10 @@ class BackgroundGridPainter extends CustomPainter {
           ),
           radius: spotlightRadius / (size.shortestSide > 0 ? size.shortestSide : 1),
           colors: const [
-            Color(0x12A88CFF),
-            Color(0x064F46E5),
+            Color(0x0CA78BFA),
             Colors.transparent,
           ],
-          stops: const [0.0, 0.5, 1.0],
+          stops: const [0.0, 1.0],
         ).createShader(Offset.zero & size);
 
       canvas.drawRect(Offset.zero & size, spotlightPaint);

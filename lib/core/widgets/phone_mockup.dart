@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../animations/tilt_3d_card.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 
@@ -67,115 +66,84 @@ class _PhoneMockupState extends State<PhoneMockup> {
 
   @override
   Widget build(BuildContext context) {
-    return Tilt3DCard(
-      maxTiltAngle: 0.07,
-      child: Container(
-        width: widget.width,
-        height: widget.height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(38),
-          color: const Color(0xFF141419),
-          border: Border.all(
-            color: const Color(0xFF2E2E38),
-            width: 8,
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        color: const Color(0xFF141419),
+        border: Border.all(
+          color: const Color(0xFF2A2A34),
+          width: 6,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x99000000),
+            blurRadius: 30,
+            offset: Offset(0, 16),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.7),
-              blurRadius: 36,
-              offset: const Offset(0, 20),
-              spreadRadius: 2,
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(26),
+        child: Stack(
+          children: [
+            // Screen content
+            Positioned.fill(
+              child: widget.isPrivate
+                  ? _buildPrivateScreen()
+                  : _buildLiveScreenshots(),
             ),
-            BoxShadow(
-              color: AppColors.accent.withValues(alpha: 0.08),
-              blurRadius: 40,
-              offset: const Offset(0, 10),
+
+            // Top Status Bar Speaker & Camera Punch-hole
+            Positioned(
+              top: 8,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 9,
+                      height: 9,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF09090C),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF1E1E24), width: 1.5),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      width: 32,
+                      height: 3,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1A1A22),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Bottom Navigation Pill
+            Positioned(
+              bottom: 8,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: 68,
+                  height: 3.5,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
             ),
           ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: Stack(
-            children: [
-              // Screen content
-              Positioned.fill(
-                child: widget.isPrivate
-                    ? _buildPrivateScreen()
-                    : _buildLiveScreenshots(),
-              ),
-
-              // Glass specular reflection highlight across top right
-              Positioned(
-                top: 0,
-                right: 0,
-                width: widget.width * 0.7,
-                height: widget.height * 0.45,
-                child: IgnorePointer(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.07),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Android Speaker Ear-piece & Punch-hole Camera
-              Positioned(
-                top: 10,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF09090C),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xFF1E1E24), width: 1.5),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        width: 36,
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1A1A22),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Bottom gesture navigation bar pill
-              Positioned(
-                bottom: 8,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Container(
-                    width: 72,
-                    height: 3.5,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.35),
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -219,36 +187,29 @@ class _PhoneMockupState extends State<PhoneMockup> {
   Widget _buildPrivateScreen() {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF161622),
-            Color(0xFF0D0D14),
-          ],
-        ),
+        color: Color(0xFF101016),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 36),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
             decoration: BoxDecoration(
-              color: const Color(0x20F59E0B),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0x50F59E0B), width: 1),
+              color: const Color(0x1DF59E0B),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: const Color(0x40F59E0B), width: 1),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.lock_outline, size: 11, color: Color(0xFFF59E0B)),
-                const SizedBox(width: 5),
+                const Icon(Icons.lock_outline, size: 10, color: Color(0xFFF59E0B)),
+                const SizedBox(width: 4),
                 Text(
-                  'PRIVATE WORK',
-                  style: AppTypography.monoLabel(fontSize: 10, color: const Color(0xFFF59E0B))
-                      .copyWith(fontWeight: FontWeight.w600),
+                  'CONFIDENTIAL WORK',
+                  style: AppTypography.monoLabel(fontSize: 9, color: const Color(0xFFF59E0B))
+                      .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.8),
                 ),
               ],
             ),
@@ -256,22 +217,22 @@ class _PhoneMockupState extends State<PhoneMockup> {
           const SizedBox(height: 18),
           Text(
             widget.title,
-            style: AppTypography.cardTitle(fontSize: 20),
+            style: AppTypography.cardTitle(fontSize: 19),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
-            'Internal Production App',
-            style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textMuted),
+            'Internal Enterprise System',
+            style: AppTypography.monoLabel(fontSize: 10.5, color: AppColors.textMuted),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           Container(
             height: 1,
-            color: AppColors.border,
+            color: AppColors.hairline,
           ),
           const SizedBox(height: 16),
           Text(
-            'Confirmed Features:',
-            style: AppTypography.monoLabel(fontSize: 11, color: AppColors.accent),
+            'VERIFIED MODULES:',
+            style: AppTypography.monoLabel(fontSize: 10, color: AppColors.accent),
           ),
           const SizedBox(height: 12),
           Expanded(
@@ -284,9 +245,9 @@ class _PhoneMockupState extends State<PhoneMockup> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 4),
-                      width: 5,
-                      height: 5,
+                      margin: const EdgeInsets.only(top: 5),
+                      width: 4,
+                      height: 4,
                       decoration: const BoxDecoration(
                         color: AppColors.accent,
                         shape: BoxShape.circle,
@@ -305,20 +266,20 @@ class _PhoneMockupState extends State<PhoneMockup> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: const Color(0x15FFFFFF),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.border, width: 1),
+              color: const Color(0x0CFFFFFF),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: AppColors.hairline, width: 1),
             ),
             child: Row(
               children: [
-                const Icon(Icons.shield_outlined, size: 16, color: AppColors.textMuted),
+                const Icon(Icons.shield_outlined, size: 14, color: AppColors.textMuted),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Production application for operational deployment',
-                    style: AppTypography.monoLabel(fontSize: 9, color: AppColors.textMuted),
+                    'Proprietary operational distribution workflow',
+                    style: AppTypography.monoLabel(fontSize: 8.5, color: AppColors.textMuted),
                   ),
                 ),
               ],

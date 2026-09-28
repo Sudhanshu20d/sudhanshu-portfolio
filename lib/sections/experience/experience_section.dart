@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/animations/tilt_3d_card.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
@@ -13,34 +12,38 @@ class ExperienceSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
+    final isMobile = screenWidth < 880;
+    final isTiny = screenWidth < 360;
 
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 24.0 : 54.0,
-        vertical: 60.0,
+        horizontal: isMobile ? (isTiny ? 16.0 : 20.0) : 48.0,
+        vertical: isMobile ? 36.0 : 64.0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionTitle(
-            number: '02 / TIMELINE',
-            title: 'Professional Track',
+            number: '04',
+            title: 'Experience',
             subtitle:
-                'Engineering real mobile applications across collaborative software environments.',
-            isItalic: true,
+                'Hands-on engineering across client production deployments, internal enterprise tools, and Google Play Store consumer releases.',
           ),
-          const SizedBox(height: 52),
+          SizedBox(height: isMobile ? 36 : 48),
 
-          // Timeline Cards list
+          // Editorial Career Ledger
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: PortfolioData.experiences.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 28),
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final exp = PortfolioData.experiences[index];
-              return _TimelineCard(experience: exp, isMobile: isMobile);
+              return _EditorialExperienceRow(
+                experience: exp,
+                isMobile: isMobile,
+              );
             },
           ),
         ],
@@ -49,136 +52,216 @@ class ExperienceSection extends StatelessWidget {
   }
 }
 
-class _TimelineCard extends StatefulWidget {
+class _EditorialExperienceRow extends StatefulWidget {
   final ExperienceModel experience;
   final bool isMobile;
 
-  const _TimelineCard({
+  const _EditorialExperienceRow({
     required this.experience,
     required this.isMobile,
   });
 
   @override
-  State<_TimelineCard> createState() => _TimelineCardState();
+  State<_EditorialExperienceRow> createState() => _EditorialExperienceRowState();
 }
 
-class _TimelineCardState extends State<_TimelineCard> {
+class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
   bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     final isCurrent = widget.experience.status == 'CURRENT';
 
-    return Tilt3DCard(
-      maxTiltAngle: 0.04,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeOutCubic,
-          padding: EdgeInsets.all(widget.isMobile ? 24.0 : 36.0),
-          decoration: BoxDecoration(
-            color: _isHovered ? const Color(0xFF14141B) : const Color(0xFF101015),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: _isHovered
-                  ? AppColors.accent.withValues(alpha: 0.4)
-                  : AppColors.border,
-              width: 1.2,
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.symmetric(
+          horizontal: widget.isMobile ? 16.0 : 28.0,
+          vertical: widget.isMobile ? 20.0 : 30.0,
+        ),
+        decoration: BoxDecoration(
+          color: _isHovered ? AppColors.surface : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: Border(
+            top: BorderSide(
+              color: _isHovered ? AppColors.accent : AppColors.hairline,
+              width: _isHovered ? 1.5 : 1.0,
             ),
-            boxShadow: [
-              if (_isHovered)
-                BoxShadow(
-                  color: AppColors.accent.withValues(alpha: 0.08),
-                  blurRadius: 32,
-                  offset: const Offset(0, 10),
-                ),
-            ],
           ),
+        ),
+        child: widget.isMobile
+            ? _buildMobileLayout(isCurrent)
+            : _buildDesktopLayout(isCurrent),
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout(bool isCurrent) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Column 1: Index + Status Badge
+        Expanded(
+          flex: 3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Row: 01/02 Number + Status Badge + Location
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.experience.index,
-                    style: AppTypography.monoNumber(
-                      fontSize: widget.isMobile ? 28 : 38,
-                      color: isCurrent ? AppColors.accent : AppColors.textMuted,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              widget.experience.company,
-                              style: AppTypography.cardTitle(
-                                fontSize: widget.isMobile ? 22 : 28,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            if (isCurrent)
-                              const LuxuryBadge(
-                                label: 'CURRENT',
-                                dotColor: AppColors.liveGreen,
-                                backgroundColor: Color(0x1510B981),
-                                borderColor: Color(0x4010B981),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          widget.experience.role,
-                          style: AppTypography.monoLabel(
-                            fontSize: 13,
-                            color: AppColors.accent,
-                          ).copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (!widget.isMobile)
-                    Text(
-                      widget.experience.location,
-                      style: AppTypography.monoLabel(fontSize: 12, color: AppColors.textMuted),
-                    ),
-                ],
+              Text(
+                widget.experience.index,
+                style: AppTypography.editorialIndex(fontSize: 40).copyWith(
+                  color: isCurrent ? AppColors.accent : AppColors.textDim,
+                ),
               ),
+              const SizedBox(height: 6),
+              if (isCurrent)
+                const LuxuryBadge(
+                  label: 'CURRENT ROLE',
+                  dotColor: AppColors.liveGreen,
+                )
+              else
+                Text(
+                  'PREVIOUS',
+                  style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textDim),
+                ),
+            ],
+          ),
+        ),
 
-              const SizedBox(height: 20),
+        const SizedBox(width: 24),
 
-              // Description
+        // Column 2: Company + Role + Location
+        Expanded(
+          flex: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.experience.company,
+                style: AppTypography.cardTitle(fontSize: 24).copyWith(
+                  color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                widget.experience.role.toUpperCase(),
+                style: AppTypography.monoLabel(
+                  fontSize: 11.5,
+                  color: AppColors.textPrimary,
+                ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.0),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                widget.experience.location,
+                style: AppTypography.monoLabel(fontSize: 10.5, color: AppColors.textMuted),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 28),
+
+        // Column 3: Factual Responsibilities & Technologies
+        Expanded(
+          flex: 6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Text(
                 widget.experience.summary,
                 style: AppTypography.bodyMedium(height: 1.6),
               ),
-
-              const SizedBox(height: 20),
-
-              // Technologies used
+              const SizedBox(height: 16),
               Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: 6,
+                runSpacing: 6,
                 children: widget.experience.technologies.map((tech) {
                   return LuxuryBadge(
                     label: tech,
-                    backgroundColor: const Color(0x0EFFFFFF),
-                    borderColor: AppColors.border,
+                    backgroundColor: const Color(0x0AFFFFFF),
+                    borderColor: AppColors.hairline,
                   );
                 }).toList(),
               ),
             ],
           ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout(bool isCurrent) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              widget.experience.index,
+              style: AppTypography.editorialIndex(fontSize: 32).copyWith(
+                color: isCurrent ? AppColors.accent : AppColors.textDim,
+              ),
+            ),
+            if (isCurrent)
+              const LuxuryBadge(
+                label: 'CURRENT ROLE',
+                dotColor: AppColors.liveGreen,
+              )
+            else
+              Text(
+                'PREVIOUS',
+                style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textDim),
+              ),
+          ],
+        ),
+
+        const SizedBox(height: 10),
+
+        Text(
+          widget.experience.company,
+          style: AppTypography.cardTitle(fontSize: 20).copyWith(
+            color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          widget.experience.role.toUpperCase(),
+          style: AppTypography.monoLabel(
+            fontSize: 10.5,
+            color: AppColors.accent,
+          ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.8),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          widget.experience.location,
+          style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textMuted),
+        ),
+
+        const SizedBox(height: 12),
+
+        Text(
+          widget.experience.summary,
+          style: AppTypography.bodyMedium(height: 1.55),
+        ),
+
+        const SizedBox(height: 14),
+
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: widget.experience.technologies.map((tech) {
+            return LuxuryBadge(
+              label: tech,
+              backgroundColor: const Color(0x0AFFFFFF),
+              borderColor: AppColors.hairline,
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

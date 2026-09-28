@@ -11,6 +11,7 @@ class ProjectModel {
   final String iconAsset;
   final List<String> screenshotAssets;
   final String? playStoreUrl;
+  final String? appStoreUrl;
   final String? githubUrl;
   final ProjectType type;
 
@@ -25,6 +26,7 @@ class ProjectModel {
     required this.iconAsset,
     required this.screenshotAssets,
     this.playStoreUrl,
+    this.appStoreUrl,
     this.githubUrl,
     this.type = ProjectType.published,
   });

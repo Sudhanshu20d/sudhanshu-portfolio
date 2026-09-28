@@ -48,20 +48,27 @@ class _MarqueeStripState extends State<MarqueeStrip> with SingleTickerProviderSt
         ),
       ),
       child: ClipRect(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return FractionalTranslation(
-              translation: Offset(-_controller.value * 0.5, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildContent(),
-                  _buildContent(),
-                ],
-              ),
-            );
-          },
+        child: OverflowBox(
+          alignment: Alignment.centerLeft,
+          minWidth: 0.0,
+          maxWidth: double.infinity,
+          minHeight: 0.0,
+          maxHeight: widget.height,
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return FractionalTranslation(
+                translation: Offset(-_controller.value * 0.5, 0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildContent(),
+                    _buildContent(),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

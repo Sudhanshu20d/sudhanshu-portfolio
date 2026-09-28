@@ -21,6 +21,7 @@ class PortfolioData {
   static const String linkedinUrl = 'https://www.linkedin.com/in/sudhanshu-singh-0a4822278/';
   static const String instagramUrl = 'https://www.instagram.com/Shudhanshu_sd/';
   static const String twitterUrl = 'https://x.com/shudhanshu_sd?s=11';
+  static const String resumeUrl = 'resume.pdf';
 
   // Images
   static const String portraitAsset = 'assets/images/portrait/sudhanshu.jpg';
@@ -124,7 +125,7 @@ class PortfolioData {
         'Entrepreneurship & founder networking hub',
         'Events, workshops, and ecosystem discovery',
         'Interactive community feeds and resources',
-        'Responsive mobile experience optimized for Android',
+        'Responsive mobile experience for Android & iOS',
       ],
       technologies: ['Flutter', 'Dart', 'REST APIs', 'State Management'],
       iconAsset: 'assets/images/projects/vapi_startup_icon.png',
@@ -134,7 +135,8 @@ class PortfolioData {
         'assets/images/projects/vapi_startup_screen3.png',
         'assets/images/projects/vapi_startup_screen4.png',
       ],
-      playStoreUrl: 'https://play.google.com/store/apps/details?id=com.app.mycitycommunity',
+      playStoreUrl: 'https://play.google.com/store/apps/details?id=com.app.mycitycommunity&pcampaignid=web_share',
+      appStoreUrl: 'https://apps.apple.com/us/app/vapi-startup-community/id6759277348',
       type: ProjectType.published,
     ),
     ProjectModel(
@@ -203,6 +205,31 @@ class PortfolioData {
       screenshotAssets: [],
       type: ProjectType.privateWork,
     ),
+  ];
+
+  // Selected Projects (Editorial List Showcase)
+  static const List<Map<String, String>> selectedProjects = [
+    {
+      'id': '01',
+      'title': 'Animal Pop Kids',
+      'description': 'Flutter project from the existing portfolio.',
+      'tag': 'FLUTTER',
+      'url': 'https://github.com/Sudhanshu20d',
+    },
+    {
+      'id': '02',
+      'title': 'CRM365',
+      'description': 'Enterprise mobile CRM client built for business workflows.',
+      'tag': 'FLUTTER',
+      'url': 'https://github.com/Sudhanshu20d',
+    },
+    {
+      'id': '03',
+      'title': 'Saifee Milk',
+      'description': 'Field driver & milk logistics management application.',
+      'tag': 'FLUTTER',
+      'url': 'https://github.com/Sudhanshu20d',
+    },
   ];
 
   // Verified GitHub Repositories

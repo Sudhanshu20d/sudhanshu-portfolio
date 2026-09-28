@@ -18,6 +18,7 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Sudhanshu Singh — Flutter Developer • Mobile App Developer. Handcrafted production mobile applications. Vapi, Gujarat, India.">
   <meta name="theme-color" content="#09090B">
 
@@ -34,80 +35,119 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      background-color: #09090B;
+      height: 100%;
+    }
     body {
       background-color: #09090B;
       margin: 0;
       padding: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-    .loading-container {
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: 'IBM Plex Mono', monospace;
+      background-color: #09090B;
+      z-index: 999999;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #loading-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
     .monogram-box {
-      width: 58px;
-      height: 58px;
-      background-color: #16161F;
-      border-radius: 14px;
-      border: 1.5px solid #A88CFF;
-      box-shadow: 0 0 20px rgba(168, 140, 255, 0.35);
+      width: 80px;
+      height: 80px;
+      min-width: 80px;
+      min-height: 80px;
+      max-width: 80px;
+      max-height: 80px;
+      flex-shrink: 0;
+      background-color: #14141A;
+      border-radius: 18px;
+      border: 1.5px solid rgba(168, 140, 255, 0.65);
+      box-shadow: 0 0 24px rgba(168, 140, 255, 0.35);
       display: flex;
-      justify-content: center;
       align-items: center;
-      color: #FFFFFF;
-      font-size: 20px;
+      justify-content: center;
+      color: #F6F4EF;
+      font-family: 'IBM Plex Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
+      font-size: 28px;
+      line-height: 1;
       font-weight: 700;
-      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      white-space: nowrap;
       animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
     }
+    @media (min-width: 768px) {
+      .monogram-box {
+        width: 88px;
+        height: 88px;
+        min-width: 88px;
+        min-height: 88px;
+        max-width: 88px;
+        max-height: 88px;
+        border-radius: 20px;
+        border: 1.5px solid rgba(168, 140, 255, 0.75);
+        box-shadow: 0 0 32px rgba(168, 140, 255, 0.4);
+        font-size: 32px;
+      }
+    }
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(0.95); }
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.75;
+        transform: scale(0.96);
+      }
     }
   </style>
   <script>
-    window.addEventListener('load', function(ev) {
-      // Customize flutter web bootstrap to hide the default loading indicator
-      _flutter.buildConfig = {
-        builds: [
-          {
-            compileTarget: "dart2wasm",
-            renderer: "skwasm",
-            mainWasmPath: "main.dart.wasm",
-            jsAppPath: "main.dart.mjs",
-          },
-          {
-            compileTarget: "dart2js",
-            renderer: "canvaskit",
-            mainJsPath: "main.dart.js",
-          },
-        ],
-      };
-      // Download main.dart.js
-      _flutter.loader.load({
-        onEntrypointLoaded: async function(engineInitializer) {
-          const appRunner = await engineInitializer.initializeEngine();
-          
-          // Remove custom loading screen
-          document.getElementById('loading-screen')?.remove();
-          
-          await appRunner.runApp();
-        }
-      });
+    // Failsafe listener for flutter first frame
+    window.addEventListener('flutter-first-frame', function() {
+      var loader = document.getElementById('loading-screen');
+      if (loader && !loader.classList.contains('fade-out')) {
+        loader.classList.add('fade-out');
+        setTimeout(function() {
+          loader.remove();
+        }, 400);
+      }
     });
   </script>
 </head>
 <body style="background-color: #09090B;">
-  <div id="loading-screen" class="loading-container">
+  <div id="loading-screen">
     <div class="monogram-box">SD</div>
   </div>
   <script src="flutter_bootstrap.js" async></script>

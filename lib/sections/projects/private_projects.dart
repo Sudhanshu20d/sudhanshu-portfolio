@@ -1,192 +1,286 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import '../../core/widgets/luxury_badge.dart';
-import '../../core/widgets/phone_mockup.dart';
 import '../../core/widgets/section_title.dart';
-import '../../models/project_model.dart';
 
 class PrivateProjectsSection extends StatelessWidget {
   const PrivateProjectsSection({super.key});
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  void _showProjectModal(BuildContext context, Map<String, String> project) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(32),
+          decoration: const BoxDecoration(
+            border: Border(top: BorderSide(color: AppColors.accent, width: 2)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${project['id']} / SELECTED PROJECT',
+                    style: AppTypography.monoNumber(fontSize: 12, color: AppColors.accent),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: AppColors.textPrimary),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                project['title']!,
+                style: AppTypography.displayHeading(fontSize: 36),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                project['description']!,
+                style: AppTypography.bodyLead(),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.hairline),
+                    ),
+                    child: Text(
+                      'TECH: ${project['tag']}',
+                      style: AppTypography.monoLabel(fontSize: 11, color: AppColors.accent),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  TextButton(
+                    onPressed: () => _launchUrl(project['url']!),
+                    child: Text(
+                      'View on GitHub ↗',
+                      style: AppTypography.monoLabel(fontSize: 12, color: AppColors.textPrimary)
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 960;
+    final isTiny = screenWidth < 360;
 
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 24.0 : 54.0,
-        vertical: 60.0,
+        horizontal: isMobile ? (isTiny ? 16.0 : 20.0) : 48.0,
+        vertical: isMobile ? 32.0 : 64.0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Section Heading: 02  Selected projects
           const SectionTitle(
-            number: '05 / PRIVATE WORK',
-            title: 'Internal Production Apps',
+            number: '02',
+            title: 'Selected projects',
             subtitle:
-                'Commercial and distribution applications developed for operational deployment. Displayed under confidential client agreement.',
-            isItalic: true,
+                'Curated mobile client builds, enterprise management solutions, and interactive applications.',
           ),
-          const SizedBox(height: 52),
 
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: PortfolioData.privateProjects.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 48),
-            itemBuilder: (context, index) {
-              final project = PortfolioData.privateProjects[index];
-              return _PrivateProjectCard(project: project, isMobile: isMobile);
-            },
+          SizedBox(height: isMobile ? 32 : 48),
+
+          // Hairline rule above list
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: AppColors.hairline,
           ),
+
+          // Editorial List Rows matching Screenshot 1
+          ...PortfolioData.selectedProjects.map((project) {
+            return _EditorialListRow(
+              index: project['id']!,
+              title: project['title']!,
+              description: project['description']!,
+              tag: '${project['tag']} ↗',
+              isMobile: isMobile,
+              onTap: () => _showProjectModal(context, project),
+            );
+          }),
         ],
       ),
     );
   }
 }
 
-class _PrivateProjectCard extends StatelessWidget {
-  final ProjectModel project;
+class _EditorialListRow extends StatefulWidget {
+  final String index;
+  final String title;
+  final String description;
+  final String tag;
   final bool isMobile;
+  final VoidCallback onTap;
 
-  const _PrivateProjectCard({
-    required this.project,
+  const _EditorialListRow({
+    required this.index,
+    required this.title,
+    required this.description,
+    required this.tag,
     required this.isMobile,
+    required this.onTap,
   });
 
   @override
+  State<_EditorialListRow> createState() => _EditorialListRowState();
+}
+
+class _EditorialListRowState extends State<_EditorialListRow> {
+  bool _isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    final phoneWidget = Center(
-      child: PhoneMockup(
-        screenshots: const [],
-        isPrivate: true,
-        title: project.title,
-        privateFeatures: project.keyFeatures,
-        width: isMobile ? 260 : 280,
-        height: isMobile ? 500 : 540,
-      ),
-    );
-
-    final infoWidget = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          children: [
-            const LuxuryBadge(
-              label: 'PRIVATE WORK',
-              dotColor: Color(0xFFF59E0B),
-              backgroundColor: Color(0x15F59E0B),
-              borderColor: Color(0x35F59E0B),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 140),
+          decoration: BoxDecoration(
+            color: _isHovered ? AppColors.surfaceElevated.withValues(alpha: 0.5) : Colors.transparent,
+            border: const Border(
+              bottom: BorderSide(color: AppColors.hairline, width: 1.0),
             ),
-            const SizedBox(width: 12),
-            Text(
-              project.category,
-              style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textMuted),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 20),
-
-        Text(
-          project.title,
-          style: AppTypography.cardTitle(fontSize: isMobile ? 26 : 34),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          project.subtitle,
-          style: AppTypography.monoLabel(fontSize: 13, color: AppColors.accent),
-        ),
-
-        const SizedBox(height: 18),
-
-        Text(
-          project.description,
-          style: AppTypography.bodyMedium(height: 1.65),
-        ),
-
-        const SizedBox(height: 24),
-
-        Text(
-          'CONFIRMED PROJECT MODULES:',
-          style: AppTypography.monoLabel(fontSize: 11, color: AppColors.accent),
-        ),
-        const SizedBox(height: 12),
-
-        // Verified features only
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: project.keyFeatures.map((feature) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 6),
-                    width: 5,
-                    height: 5,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF59E0B),
-                      shape: BoxShape.circle,
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: widget.isMobile ? 24.0 : 36.0,
+            horizontal: widget.isMobile ? 8.0 : 16.0,
+          ),
+          child: widget.isMobile
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.index,
+                          style: AppTypography.monoNumber(
+                            fontSize: 12,
+                            color: _isHovered ? AppColors.accent : AppColors.textDim,
+                          ),
+                        ),
+                        Text(
+                          widget.tag,
+                          style: AppTypography.monoLabel(
+                            fontSize: 11,
+                            color: _isHovered ? AppColors.accent : AppColors.textMuted,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      feature,
-                      style: AppTypography.bodySmall(color: const Color(0xFFD6D4CE)),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.title,
+                      style: AppTypography.displayHeading(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.8,
+                        color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.description,
+                      style: AppTypography.bodyMedium(
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Index Number
+                    SizedBox(
+                      width: 48,
+                      child: Text(
+                        widget.index,
+                        style: AppTypography.monoNumber(
+                          fontSize: 14,
+                          color: _isHovered ? AppColors.accent : AppColors.textDim,
+                        ),
+                      ),
+                    ),
+
+                    // Title
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        widget.title,
+                        style: AppTypography.displayHeading(
+                          fontSize: 34,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -1.0,
+                          color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 24),
+
+                    // Description
+                    Expanded(
+                      flex: 6,
+                      child: Text(
+                        widget.description,
+                        style: AppTypography.bodyLarge(
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 24),
+
+                    // Tag FLUTTER ↗
+                    Text(
+                      widget.tag,
+                      style: AppTypography.monoLabel(
+                        fontSize: 12,
+                        color: _isHovered ? AppColors.accent : AppColors.textMuted,
+                        letterSpacing: 1.2,
+                      ).copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
         ),
-
-        const SizedBox(height: 24),
-
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: project.technologies.map((tech) {
-            return LuxuryBadge(
-              label: tech,
-              backgroundColor: const Color(0x0CFFFFFF),
-              borderColor: AppColors.border,
-            );
-          }).toList(),
-        ),
-      ],
-    );
-
-    return Container(
-      padding: EdgeInsets.all(isMobile ? 24.0 : 40.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F0F14),
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0x20FFFFFF), width: 1.2),
       ),
-      child: isMobile
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                phoneWidget,
-                const SizedBox(height: 32),
-                infoWidget,
-              ],
-            )
-          : Row(
-              children: [
-                Expanded(flex: 5, child: phoneWidget),
-                const SizedBox(width: 44),
-                Expanded(flex: 7, child: infoWidget),
-              ],
-            ),
     );
   }
 }

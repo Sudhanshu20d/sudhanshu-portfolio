@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import '../../core/widgets/magnetic_button.dart';
 
 class MobileNavbar extends StatelessWidget {
   final bool isScrolled;
@@ -19,12 +18,15 @@ class MobileNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 360;
+
     return Container(
       decoration: BoxDecoration(
         color: isScrolled ? AppColors.surfaceGlass : Colors.transparent,
         border: Border(
           bottom: BorderSide(
-            color: isScrolled ? AppColors.border : Colors.transparent,
+            color: isScrolled ? AppColors.hairline : Colors.transparent,
             width: 1,
           ),
         ),
@@ -37,69 +39,61 @@ class MobileNavbar extends StatelessWidget {
           child: SafeArea(
             bottom: false,
             child: Container(
-              height: 64, // Fixed navbar content height for 52x52 logo
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 60,
+              padding: EdgeInsets.symmetric(horizontal: isCompact ? 10 : 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Left Side: Branding
-                  Expanded(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 52,
-                          height: 52,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF14141A),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.borderLight, width: 1),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              PortfolioData.monogram,
-                              style: AppTypography.monoNumber(
-                                fontSize: 18,
-                                color: AppColors.textPrimary,
-                                fontWeight: FontWeight.w700,
-                              ).copyWith(height: 1.0),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
+                  // Left: SD. Brand
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => onOpenMenu(),
+                      child: Text(
+                        '${PortfolioData.monogram}.',
+                        style: AppTypography.displayHeading(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.5,
+                          color: AppColors.textPrimary,
                         ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            'SUDHANSHU',
-                            style: AppTypography.monoLabel(fontSize: 13, color: AppColors.textPrimary)
-                                .copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
 
-                  // Right Side: Actions
+                  // Right: Actions (CV button + Hamburger)
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      MagneticButton(
-                        text: 'CV',
-                        icon: Icons.download_rounded,
-                        isSmall: true,
-                        style: MagneticButtonStyle.outline,
-                        onTap: onResumeTap,
+                      MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: onResumeTap,
+                          child: Container(
+                            constraints: const BoxConstraints(minHeight: 38),
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: AppColors.surface,
+                              border: Border.all(color: AppColors.hairline),
+                            ),
+                            child: Text(
+                              'RESUME ↗',
+                              style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textPrimary),
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 8),
+                      // Clean 44x44px touch target for hamburger
                       SizedBox(
                         width: 44,
                         height: 44,
                         child: IconButton(
                           padding: EdgeInsets.zero,
                           onPressed: onOpenMenu,
-                          icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 28),
+                          icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 26),
                           splashRadius: 22,
                         ),
                       ),
@@ -133,64 +127,63 @@ class MobileDrawer extends StatelessWidget {
       color: Colors.transparent,
       child: Stack(
         children: [
-          // Frosted background tap to close
+          // Frosted Backdrop Tap to Close
           GestureDetector(
             onTap: onClose,
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
               child: Container(
-                color: AppColors.background.withValues(alpha: 0.92),
+                color: AppColors.background.withValues(alpha: 0.95),
               ),
             ),
           ),
 
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Drawer Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'NAVIGATION',
-                        style: AppTypography.monoLabel(fontSize: 11, color: AppColors.accent),
+                        'INDEX / NAVIGATION',
+                        style: AppTypography.monoNumber(fontSize: 11, color: AppColors.accent),
                       ),
-                      IconButton(
-                        onPressed: onClose,
-                        icon: const Icon(Icons.close_rounded, color: AppColors.textPrimary, size: 28),
+                      SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: onClose,
+                          icon: const Icon(Icons.close_rounded, color: AppColors.textPrimary, size: 26),
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 28),
 
+                  // Editorial Drawer Links
                   _DrawerLink(
                     number: '01',
-                    label: 'About',
+                    label: 'Index',
                     onTap: () {
                       onClose();
-                      onNavTap('about');
+                      onNavTap('hero');
                     },
                   ),
                   _DrawerLink(
                     number: '02',
-                    label: 'Experience',
+                    label: 'Apps',
                     onTap: () {
                       onClose();
-                      onNavTap('experience');
+                      onNavTap('apps');
                     },
                   ),
                   _DrawerLink(
                     number: '03',
-                    label: 'Skills',
-                    onTap: () {
-                      onClose();
-                      onNavTap('skills');
-                    },
-                  ),
-                  _DrawerLink(
-                    number: '04',
                     label: 'Projects',
                     onTap: () {
                       onClose();
@@ -198,11 +191,19 @@ class MobileDrawer extends StatelessWidget {
                     },
                   ),
                   _DrawerLink(
-                    number: '05',
-                    label: 'GitHub',
+                    number: '04',
+                    label: 'About',
                     onTap: () {
                       onClose();
-                      onNavTap('github');
+                      onNavTap('about');
+                    },
+                  ),
+                  _DrawerLink(
+                    number: '05',
+                    label: 'Experience',
+                    onTap: () {
+                      onClose();
+                      onNavTap('experience');
                     },
                   ),
                   _DrawerLink(
@@ -216,37 +217,53 @@ class MobileDrawer extends StatelessWidget {
 
                   const Spacer(),
 
+                  // Bottom Dossier Panel
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: const Color(0x0CFFFFFF),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.border),
+                      color: AppColors.surface,
+                      border: Border.all(color: AppColors.hairline),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          PortfolioData.location,
-                          style: AppTypography.monoLabel(fontSize: 12, color: AppColors.textMuted),
+                          'SUDHANSHU SINGH',
+                          style: AppTypography.monoLabel(fontSize: 12, color: AppColors.textPrimary)
+                              .copyWith(fontWeight: FontWeight.w600),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 3),
                         Text(
-                          PortfolioData.email,
-                          style: AppTypography.monoLabel(fontSize: 13, color: AppColors.textPrimary),
+                          '${PortfolioData.company} • ${PortfolioData.location}',
+                          style: AppTypography.monoLabel(fontSize: 10.5, color: AppColors.textMuted),
                         ),
                         const SizedBox(height: 16),
-                        SizedBox(
-                          width: double.infinity,
-                          child: MagneticButton(
-                            text: 'Download Resume',
-                            icon: Icons.download_rounded,
-                            style: MagneticButtonStyle.primary,
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
                             onTap: () {
                               onClose();
                               onResumeTap();
                             },
+                            child: Container(
+                              width: double.infinity,
+                              constraints: const BoxConstraints(minHeight: 44),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceElevated,
+                                border: Border.all(color: AppColors.hairline),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                'VIEW RESUME ↗',
+                                style: AppTypography.monoLabel(
+                                  fontSize: 11.5,
+                                  color: AppColors.textPrimary,
+                                ).copyWith(fontWeight: FontWeight.w600),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -276,19 +293,20 @@ class _DrawerLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Row(
           children: [
             Text(
               number,
-              style: AppTypography.monoNumber(fontSize: 13, color: AppColors.accent),
+              style: AppTypography.monoNumber(fontSize: 12, color: AppColors.accent),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 14),
             Text(
               label,
-              style: AppTypography.sectionTitle(fontSize: 32),
+              style: AppTypography.heroTitle(fontSize: 26, italic: false),
             ),
           ],
         ),
