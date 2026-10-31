@@ -1,3 +1,5 @@
+import '../../core/animations/letter_reveal.dart';
+import '../../core/widgets/accessible_action.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
@@ -50,7 +52,9 @@ class HeroSection extends StatefulWidget {
   State<HeroSection> createState() => _HeroSectionState();
 }
 
-class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStateMixin {
+class _HeroSectionState extends State<HeroSection>
+    with SingleTickerProviderStateMixin {
+  bool _portraitHovered = false;
   late final AnimationController _revealController;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _slideAnimation;
@@ -60,7 +64,14 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
     super.initState();
     _revealController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration:
+          WidgetsBinding
+              .instance
+              .platformDispatcher
+              .accessibilityFeatures
+              .disableAnimations
+          ? Duration.zero
+          : Duration(milliseconds: 900),
     );
 
     _fadeAnimation = CurvedAnimation(
@@ -69,10 +80,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
     );
 
     _slideAnimation = Tween<double>(begin: 20.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _revealController,
-        curve: Curves.easeOutCubic,
-      ),
+      CurvedAnimation(parent: _revealController, curve: Curves.easeOutCubic),
     );
 
     _revealController.forward();
@@ -94,9 +102,16 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
       animation: _revealController,
       builder: (context, child) {
         return Opacity(
-          opacity: _fadeAnimation.value,
+          opacity: MediaQuery.disableAnimationsOf(context)
+              ? 1
+              : _fadeAnimation.value,
           child: Transform.translate(
-            offset: Offset(0, _slideAnimation.value),
+            offset: Offset(
+              0,
+              MediaQuery.disableAnimationsOf(context)
+                  ? 0
+                  : _slideAnimation.value,
+            ),
             child: child,
           ),
         );
@@ -129,6 +144,19 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
 
             SizedBox(height: isMobile ? 28 : 44),
 
+            Wrap(
+              spacing: 18,
+              runSpacing: 10,
+              children: PortfolioData.heroPills
+                  .map(
+                    (label) => Text(
+                      label.toUpperCase(),
+                      style: AppTypography.monoLabel(fontSize: 10),
+                    ),
+                  )
+                  .toList(),
+            ),
+            SizedBox(height: 24),
             // Main Hero Editorial Composition
             if (isMobile)
               _buildMobileComposition(size)
@@ -159,32 +187,32 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    LetterReveal(
                       'Sudhanshu',
                       style: AppTypography.displayHeading(
-                        fontSize: 92,
+                        fontSize: 112,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
-                        letterSpacing: -2.5,
+                        letterSpacing: -5.6,
                         height: 0.95,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
                       children: [
-                        Text(
+                        LetterReveal(
                           'Singh',
                           style: AppTypography.displayHeading(
-                            fontSize: 92,
+                            fontSize: 112,
                             fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary,
-                            letterSpacing: -2.5,
+                            letterSpacing: -5.6,
                             height: 0.95,
                           ),
                         ),
-                        const SizedBox(width: 24),
+                        SizedBox(width: 24),
                         Text(
                           'Flutter Developer',
                           style: AppTypography.editorialItalic(
@@ -199,11 +227,11 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
                 ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
 
               // Editorial Tagline in Newsreader Italic
               ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 680),
+                constraints: BoxConstraints(maxWidth: 680),
                 child: Text(
                   'Building mobile products that people actually use.',
                   style: AppTypography.editorialItalic(
@@ -214,11 +242,11 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
                 ),
               ),
 
-              const SizedBox(height: 18),
+              SizedBox(height: 18),
 
               // Editorial Body Subtext
               ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 580),
+                constraints: BoxConstraints(maxWidth: 580),
                 child: Text(
                   'I build and ship Flutter apps for Android and iOS — focused on performance, clean architecture, and fluid 60fps native feel.',
                   style: AppTypography.bodyLarge(
@@ -228,7 +256,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
                 ),
               ),
 
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
 
               // Rectangular Editorial Buttons
               Wrap(
@@ -256,15 +284,12 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           ),
         ),
 
-        const SizedBox(width: 48),
+        SizedBox(width: 48),
 
         // Right Column: Framed Editorial Portrait with Diagonal Texture
         Expanded(
           flex: 8,
-          child: _buildPortraitDossier(
-            width: 380,
-            height: 490,
-          ),
+          child: _buildPortraitDossier(width: 380, height: 490),
         ),
       ],
     );
@@ -284,7 +309,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              LetterReveal(
                 'Sudhanshu',
                 style: AppTypography.displayHeading(
                   fontSize: 56,
@@ -294,8 +319,8 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
                   height: 0.95,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
+              SizedBox(height: 4),
+              LetterReveal(
                 'Singh',
                 style: AppTypography.displayHeading(
                   fontSize: 56,
@@ -305,7 +330,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
                   height: 0.95,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6),
               Text(
                 'Flutter Developer',
                 style: AppTypography.editorialItalic(
@@ -317,7 +342,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           ),
         ),
 
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
 
         // Editorial Tagline
         Text(
@@ -329,7 +354,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           ),
         ),
 
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
 
         // Body Subtext
         Text(
@@ -337,7 +362,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           style: AppTypography.bodyMedium(height: 1.55),
         ),
 
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
 
         // Action Buttons
         Wrap(
@@ -362,7 +387,7 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           ],
         ),
 
-        const SizedBox(height: 36),
+        SizedBox(height: 36),
 
         // Centered Real Portrait Frame
         Center(
@@ -392,31 +417,87 @@ class _HeroSectionState extends State<HeroSection> with SingleTickerProviderStat
           children: [
             // Subtle diagonal texture in background
             Positioned.fill(
-              child: CustomPaint(
-                painter: const DiagonalTexturePainter(),
-              ),
+              child: CustomPaint(painter: DiagonalTexturePainter()),
             ),
 
             // Real Portrait Asset - Clean editorial presentation with no distracting labels
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(12.0),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.border, width: 0.8),
                 ),
                 child: ClipRect(
-                  child: Image.asset(
-                    PortfolioData.portraitAsset,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: AppColors.surfaceElevated,
-                        child: const Center(
-                          child: Icon(Icons.person, size: 64, color: AppColors.textDim),
-                        ),
-                      );
-                    },
+                  child: MouseRegion(
+                    onEnter: (_) => setState(() => _portraitHovered = true),
+                    onExit: (_) => setState(() => _portraitHovered = false),
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.matrix(
+                        _portraitHovered
+                            ? <double>[
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.0625,
+                                0.2104,
+                                0.0212,
+                                0,
+                                0,
+                                0.0258,
+                                0.0869,
+                                0.0088,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1,
+                                0,
+                              ]
+                            : <double>[
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1,
+                                0,
+                              ],
+                      ),
+                      child: Image.asset(
+                        PortfolioData.portraitAsset,
+                        semanticLabel: PortfolioData.name,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: AppColors.surfaceElevated,
+                            child: Center(
+                              child: Icon(
+                                Icons.person,
+                                size: 64,
+                                color: AppColors.textDim,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -449,7 +530,9 @@ class _EditorialRectButtonState extends State<_EditorialRectButton> {
   @override
   Widget build(BuildContext context) {
     final borderColor = widget.isPrimary
-        ? (_isHovered ? AppColors.accent : AppColors.accent.withValues(alpha: 0.6))
+        ? (_isHovered
+              ? AppColors.accent
+              : AppColors.accent.withValues(alpha: 0.6))
         : (_isHovered ? AppColors.accent : AppColors.hairline);
 
     final textColor = widget.isPrimary
@@ -460,12 +543,19 @@ class _EditorialRectButtonState extends State<_EditorialRectButton> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          duration:
+              WidgetsBinding
+                  .instance
+                  .platformDispatcher
+                  .accessibilityFeatures
+                  .disableAnimations
+              ? Duration.zero
+              : Duration(milliseconds: 140),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
             color: _isHovered ? AppColors.surfaceElevated : AppColors.surface,
             border: Border.all(color: borderColor, width: 1.0),

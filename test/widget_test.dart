@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:sudhanshu_portfolio/core/constants/portfolio_data.dart';
 import 'package:sudhanshu_portfolio/main.dart';
 
 void main() {
+  setUpAll(() {
+    VisibilityDetectorController.instance.updateInterval = Duration.zero;
+  });
   test('Portfolio data verification test', () {
     expect(PortfolioData.name, 'Sudhanshu Singh');
     expect(PortfolioData.monogram, 'SD');
     expect(PortfolioData.company, 'RND Technosoft');
-    expect(PortfolioData.publishedProjects.length, 2);
+    expect(PortfolioData.publishedProjects.length, 3);
     expect(PortfolioData.privateProjects.length, 2);
     expect(PortfolioData.githubRepos.length, 5);
 
@@ -29,6 +33,17 @@ void main() {
     );
     expect(bhajanProject.playStoreUrl, isNotNull);
     expect(bhajanProject.appStoreUrl, isNull);
+    expect(vapiProject.screenshotAssets.length, 4);
+    expect(vapiProject.iosScreenshotAssets.length, 6);
+    final agbProject = PortfolioData.publishedProjects.firstWhere(
+      (p) => p.id == 'agb-courier',
+    );
+    expect(
+      agbProject.playStoreUrl,
+      'https://play.google.com/store/apps/details?id=com.agbcourier.app&hl=en_IN',
+    );
+    expect(agbProject.screenshotAssets.length, 7);
+    expect(agbProject.appStoreUrl, isNull);
   });
 
   const viewports = [
@@ -36,32 +51,41 @@ void main() {
     Size(360, 780),
     Size(375, 812),
     Size(390, 844),
+    Size(610, 800),
     Size(768, 1024),
+    Size(960, 800),
     Size(1280, 800),
   ];
 
   for (final vp in viewports) {
-    testWidgets('Renders without overflow at ${vp.width.toInt()}x${vp.height.toInt()}', (tester) async {
-      tester.view.physicalSize = vp;
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(() {
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
+    testWidgets(
+      'Renders without overflow at ${vp.width.toInt()}x${vp.height.toInt()}',
+      (tester) async {
+        tester.view.physicalSize = vp;
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
 
-      FlutterErrorDetails? caught;
-      final oldOnError = FlutterError.onError;
-      FlutterError.onError = (details) {
-        caught = details;
-      };
+        FlutterErrorDetails? caught;
+        final oldOnError = FlutterError.onError;
+        FlutterError.onError = (details) {
+          caught = details;
+        };
 
-      await tester.pumpWidget(const PortfolioApp());
-      await tester.pump(const Duration(milliseconds: 500));
+        await tester.pumpWidget(const PortfolioApp());
+        await tester.pump(const Duration(milliseconds: 500));
 
-      FlutterError.onError = oldOnError;
-      expect(caught, isNull, reason: 'Caught layout/render exception: ${caught?.exception}');
-      expect(tester.takeException(), isNull);
-      expect(find.textContaining('SUDHANSHU'), findsWidgets);
-    });
+        FlutterError.onError = oldOnError;
+        expect(
+          caught,
+          isNull,
+          reason: 'Caught layout/render exception: ${caught?.exception}',
+        );
+        expect(tester.takeException(), isNull);
+        expect(find.textContaining('SUDHANSHU'), findsWidgets);
+      },
+    );
   }
 }

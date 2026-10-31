@@ -45,7 +45,7 @@ class _Tilt3DCardState extends State<Tilt3DCard> {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 960;
-    if (isMobile) {
+    if (isMobile || MediaQuery.disableAnimationsOf(context)) {
       return widget.child;
     }
 
@@ -67,7 +67,14 @@ class _Tilt3DCardState extends State<Tilt3DCard> {
                   ..scaleByDouble(s, s, 1.0, 1.0);
               }(),
             ),
-            duration: const Duration(milliseconds: 180),
+            duration:
+                WidgetsBinding
+                    .instance
+                    .platformDispatcher
+                    .accessibilityFeatures
+                    .disableAnimations
+                ? Duration.zero
+                : Duration(milliseconds: 180),
             curve: Curves.easeOutCubic,
             builder: (context, transform, child) {
               return Transform(

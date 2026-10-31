@@ -18,14 +18,16 @@ class PortfolioData {
 
   // Social URLs
   static const String githubUrl = 'https://github.com/Sudhanshu20d';
-  static const String linkedinUrl = 'https://www.linkedin.com/in/sudhanshu-singh-0a4822278/';
+  static const String linkedinUrl =
+      'https://www.linkedin.com/in/sudhanshu-singh-0a4822278/';
   static const String instagramUrl = 'https://www.instagram.com/Shudhanshu_sd/';
   static const String twitterUrl = 'https://x.com/shudhanshu_sd?s=11';
   static const String resumeUrl = 'resume.pdf';
 
   // Images
   static const String portraitAsset = 'assets/images/portrait/sudhanshu.jpg';
-  static const String githubAvatarAsset = 'assets/images/portrait/github_avatar.png';
+  static const String githubAvatarAsset =
+      'assets/images/portrait/github_avatar.png';
 
   // Metadata pills
   static const List<String> heroPills = [
@@ -52,7 +54,14 @@ class PortfolioData {
       status: 'CURRENT',
       summary:
           'Engineering production Flutter mobile applications, integrating complex REST APIs, state management architectures, and delivering published consumer and commercial applications to the Google Play Store.',
-      technologies: ['Flutter', 'Dart', 'REST APIs', 'State Management', 'Git', 'Android'],
+      technologies: [
+        'Flutter',
+        'Dart',
+        'REST APIs',
+        'State Management',
+        'Git',
+        'Android',
+      ],
     ),
     ExperienceModel(
       index: '02',
@@ -62,7 +71,13 @@ class PortfolioData {
       status: 'PREVIOUS',
       summary:
           'Developed responsive cross-platform user interfaces, local storage workflows, and mobile application modules with clean Dart codebases and team collaboration.',
-      technologies: ['Flutter', 'Dart', 'Local Storage', 'Responsive UI', 'Git'],
+      technologies: [
+        'Flutter',
+        'Dart',
+        'Local Storage',
+        'Responsive UI',
+        'Git',
+      ],
     ),
   ];
 
@@ -73,7 +88,11 @@ class PortfolioData {
     {'name': 'Firebase', 'category': 'Cloud & Tools', 'level': 'Technology'},
     {'name': 'REST APIs', 'category': 'Networking', 'level': 'Integration'},
     {'name': 'Bloc', 'category': 'Architecture', 'level': 'State Management'},
-    {'name': 'Provider', 'category': 'Architecture', 'level': 'State Management'},
+    {
+      'name': 'Provider',
+      'category': 'Architecture',
+      'level': 'State Management',
+    },
     {'name': 'Hive', 'category': 'Storage', 'level': 'Local DB'},
     {'name': 'SQLite', 'category': 'Storage', 'level': 'Local DB'},
     {'name': 'Git', 'category': 'VCS', 'level': 'Version Control'},
@@ -135,8 +154,18 @@ class PortfolioData {
         'assets/images/projects/vapi_startup_screen3.png',
         'assets/images/projects/vapi_startup_screen4.png',
       ],
-      playStoreUrl: 'https://play.google.com/store/apps/details?id=com.app.mycitycommunity&pcampaignid=web_share',
-      appStoreUrl: 'https://apps.apple.com/us/app/vapi-startup-community/id6759277348',
+      iosScreenshotAssets: [
+        'assets/images/projects/vapi_iphone_screen1.jpg',
+        'assets/images/projects/vapi_iphone_screen2.jpg',
+        'assets/images/projects/vapi_iphone_screen3.jpg',
+        'assets/images/projects/vapi_iphone_screen4.jpg',
+        'assets/images/projects/vapi_iphone_screen5.jpg',
+        'assets/images/projects/vapi_iphone_screen6.jpg',
+      ],
+      playStoreUrl:
+          'https://play.google.com/store/apps/details?id=com.app.mycitycommunity&pcampaignid=web_share',
+      appStoreUrl:
+          'https://apps.apple.com/us/app/vapi-startup-community/id6759277348',
       type: ProjectType.published,
     ),
     ProjectModel(
@@ -160,7 +189,37 @@ class PortfolioData {
         'assets/images/projects/bhajan_kirtan_screen3.png',
         'assets/images/projects/bhajan_kirtan_screen4.png',
       ],
-      playStoreUrl: 'https://play.google.com/store/apps/details?id=com.Rndtechnosoft.bhajankirtan',
+      playStoreUrl:
+          'https://play.google.com/store/apps/details?id=com.Rndtechnosoft.bhajankirtan',
+      type: ProjectType.published,
+    ),
+    ProjectModel(
+      id: 'agb-courier',
+      title: 'AGB Courier & Cargo Service',
+      subtitle: 'Reliable courier and cargo management for businesses',
+      category: 'COURIER & LOGISTICS',
+      description:
+          'A business app for authorized courier teams to manage bookings, shipment tracking, manifests, proof of delivery, billing and operational reports.',
+      keyFeatures: [
+        'Courier operations dashboard and bookings',
+        'AWB shipment tracking and manifest management',
+        'Proof of delivery updates and POD images',
+        'Office management and role-based permissions',
+        'Billing and operational reports',
+      ],
+      technologies: ['Android', 'Courier Operations'],
+      iconAsset: 'assets/images/projects/agb_courier_icon.png',
+      screenshotAssets: [
+        'assets/images/projects/agb_courier_screen1.png',
+        'assets/images/projects/agb_courier_screen2.png',
+        'assets/images/projects/agb_courier_screen3.png',
+        'assets/images/projects/agb_courier_screen4.png',
+        'assets/images/projects/agb_courier_screen5.png',
+        'assets/images/projects/agb_courier_screen6.png',
+        'assets/images/projects/agb_courier_screen7.png',
+      ],
+      playStoreUrl:
+          'https://play.google.com/store/apps/details?id=com.agbcourier.app&hl=en_IN',
       type: ProjectType.published,
     ),
   ];
@@ -219,7 +278,8 @@ class PortfolioData {
     {
       'id': '02',
       'title': 'CRM365',
-      'description': 'Enterprise mobile CRM client built for business workflows.',
+      'description':
+          'Enterprise mobile CRM client built for business workflows.',
       'tag': 'FLUTTER',
       'url': 'https://github.com/Sudhanshu20d',
     },
@@ -236,35 +296,40 @@ class PortfolioData {
   static const List<GitHubRepoModel> githubRepos = [
     GitHubRepoModel(
       name: 'cinebook',
-      description: 'Cinema ticket booking application with interactive seat layout, movie showtimes, and booking confirmation flow.',
+      description:
+          'Cinema ticket booking application with interactive seat layout, movie showtimes, and booking confirmation flow.',
       language: 'Dart',
       url: 'https://github.com/Sudhanshu20d/cinebook',
       badge: 'FLUTTER',
     ),
     GitHubRepoModel(
       name: 'doctor_appointment',
-      description: 'A Flutter doctor appointment booking app with date, slot selection, specialist listings, and confirmation screens.',
+      description:
+          'A Flutter doctor appointment booking app with date, slot selection, specialist listings, and confirmation screens.',
       language: 'Dart / C++',
       url: 'https://github.com/Sudhanshu20d/doctor_appointment',
       badge: 'MOBILE APP',
     ),
     GitHubRepoModel(
       name: 'Flutter---Offline-Database--Sqlite',
-      description: 'State Management, Forms, API Integration, and Local Storage. Practical projects using setState, Provider, Riverpod, HTTP APIs, SharedPreferences, and Hive.',
+      description:
+          'State Management, Forms, API Integration, and Local Storage. Practical projects using setState, Provider, Riverpod, HTTP APIs, SharedPreferences, and Hive.',
       language: 'Dart',
       url: 'https://github.com/Sudhanshu20d/Flutter---Offline-Database--Sqlite',
       badge: 'OFFLINE & SQLITE',
     ),
     GitHubRepoModel(
       name: 'flutter-auth-app',
-      description: 'Flutter authentication application implementing complete login & signup workflows with REST API integration.',
+      description:
+          'Flutter authentication application implementing complete login & signup workflows with REST API integration.',
       language: 'Dart / C++',
       url: 'https://github.com/Sudhanshu20d/flutter-auth-app',
       badge: 'AUTH & APIS',
     ),
     GitHubRepoModel(
       name: 'HabitX',
-      description: 'Habit tracking and daily routine builder mobile application engineered with Flutter & Dart.',
+      description:
+          'Habit tracking and daily routine builder mobile application engineered with Flutter & Dart.',
       language: 'Dart',
       url: 'https://github.com/Sudhanshu20d/HabitX',
       badge: 'FLUTTER',

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../core/theme/app_colors.dart';
@@ -18,90 +19,98 @@ class MobileNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isCompact = screenWidth < 360;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: isScrolled ? AppColors.surfaceGlass : Colors.transparent,
-        border: Border(
-          bottom: BorderSide(
-            color: isScrolled ? AppColors.hairline : Colors.transparent,
-            width: 1,
-          ),
-        ),
-      ),
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: isScrolled
-              ? ImageFilter.blur(sigmaX: 16, sigmaY: 16)
-              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: SafeArea(
-            bottom: false,
-            child: Container(
-              height: 60,
-              padding: EdgeInsets.symmetric(horizontal: isCompact ? 10 : 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Left: SD. Brand
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () => onOpenMenu(),
-                      child: Text(
-                        '${PortfolioData.monogram}.',
-                        style: AppTypography.displayHeading(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: -0.5,
-                          color: AppColors.textPrimary,
-                        ),
+    return SafeArea(
+      bottom: false,
+      child: SizedBox(
+        height: 72,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: AccessibleAction(
+                      onTap: onOpenMenu,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${PortfolioData.monogram}.',
+                            style: AppTypography.displayHeading(
+                              fontSize: 24,
+                              letterSpacing: -1,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                PortfolioData.name,
+                                style: AppTypography.bodySmall(
+                                  color: AppColors.textPrimary,
+                                ).copyWith(fontSize: 12),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'FLUTTER DEVELOPER',
+                                style: AppTypography.monoLabel(
+                                  fontSize: 8,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
-
-                  // Right: Actions (CV button + Hamburger)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: onResumeTap,
-                          child: Container(
-                            constraints: const BoxConstraints(minHeight: 38),
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColors.surface,
-                              border: Border.all(color: AppColors.hairline),
-                            ),
-                            child: Text(
-                              'RESUME ↗',
-                              style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textPrimary),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Clean 44x44px touch target for hamburger
-                      SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: onOpenMenu,
-                          icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 26),
-                          splashRadius: 22,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(width: 12),
+              SizedBox(
+                height: 40,
+                child: AccessibleAction(
+                  onTap: onResumeTap,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.borderLight),
+                    ),
+                    child: Text(
+                      'RESUME ↗',
+                      style: AppTypography.monoLabel(
+                        fontSize: 10,
+                        letterSpacing: 0.6,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: IconButton(
+                  tooltip: 'Open navigation',
+                  padding: EdgeInsets.zero,
+                  onPressed: onOpenMenu,
+                  icon: Icon(
+                    Icons.menu_rounded,
+                    color: AppColors.textPrimary,
+                    size: 26,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -129,6 +138,7 @@ class MobileDrawer extends StatelessWidget {
         children: [
           // Frosted Backdrop Tap to Close
           GestureDetector(
+            excludeFromSemantics: true,
             onTap: onClose,
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -140,136 +150,150 @@ class MobileDrawer extends StatelessWidget {
 
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Drawer Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'INDEX / NAVIGATION',
-                        style: AppTypography.monoNumber(fontSize: 11, color: AppColors.accent),
-                      ),
-                      SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: onClose,
-                          icon: const Icon(Icons.close_rounded, color: AppColors.textPrimary, size: 26),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-
-                  // Editorial Drawer Links
-                  _DrawerLink(
-                    number: '01',
-                    label: 'Index',
-                    onTap: () {
-                      onClose();
-                      onNavTap('hero');
-                    },
-                  ),
-                  _DrawerLink(
-                    number: '02',
-                    label: 'Apps',
-                    onTap: () {
-                      onClose();
-                      onNavTap('apps');
-                    },
-                  ),
-                  _DrawerLink(
-                    number: '03',
-                    label: 'Projects',
-                    onTap: () {
-                      onClose();
-                      onNavTap('projects');
-                    },
-                  ),
-                  _DrawerLink(
-                    number: '04',
-                    label: 'About',
-                    onTap: () {
-                      onClose();
-                      onNavTap('about');
-                    },
-                  ),
-                  _DrawerLink(
-                    number: '05',
-                    label: 'Experience',
-                    onTap: () {
-                      onClose();
-                      onNavTap('experience');
-                    },
-                  ),
-                  _DrawerLink(
-                    number: '06',
-                    label: 'Contact',
-                    onTap: () {
-                      onClose();
-                      onNavTap('contact');
-                    },
-                  ),
-
-                  const Spacer(),
-
-                  // Bottom Dossier Panel
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      border: Border.all(color: AppColors.hairline),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Drawer Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'SUDHANSHU SINGH',
-                          style: AppTypography.monoLabel(fontSize: 12, color: AppColors.textPrimary)
-                              .copyWith(fontWeight: FontWeight.w600),
+                          'INDEX / NAVIGATION',
+                          style: AppTypography.monoNumber(
+                            fontSize: 11,
+                            color: AppColors.accent,
+                          ),
                         ),
-                        const SizedBox(height: 3),
-                        Text(
-                          '${PortfolioData.company} • ${PortfolioData.location}',
-                          style: AppTypography.monoLabel(fontSize: 10.5, color: AppColors.textMuted),
-                        ),
-                        const SizedBox(height: 16),
-                        MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              onClose();
-                              onResumeTap();
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              constraints: const BoxConstraints(minHeight: 44),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: AppColors.surfaceElevated,
-                                border: Border.all(color: AppColors.hairline),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                'VIEW RESUME ↗',
-                                style: AppTypography.monoLabel(
-                                  fontSize: 11.5,
-                                  color: AppColors.textPrimary,
-                                ).copyWith(fontWeight: FontWeight.w600),
-                              ),
+                        SizedBox(
+                          width: 44,
+                          height: 44,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: onClose,
+                            icon: Icon(
+                              Icons.close_rounded,
+                              color: AppColors.textPrimary,
+                              size: 26,
                             ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    SizedBox(height: 28),
+
+                    // Editorial Drawer Links
+                    _DrawerLink(
+                      number: '01',
+                      label: 'Index',
+                      onTap: () {
+                        onClose();
+                        onNavTap('hero');
+                      },
+                    ),
+                    _DrawerLink(
+                      number: '02',
+                      label: 'Apps',
+                      onTap: () {
+                        onClose();
+                        onNavTap('apps');
+                      },
+                    ),
+                    _DrawerLink(
+                      number: '03',
+                      label: 'Projects',
+                      onTap: () {
+                        onClose();
+                        onNavTap('projects');
+                      },
+                    ),
+                    _DrawerLink(
+                      number: '04',
+                      label: 'About',
+                      onTap: () {
+                        onClose();
+                        onNavTap('about');
+                      },
+                    ),
+                    _DrawerLink(
+                      number: '05',
+                      label: 'Experience',
+                      onTap: () {
+                        onClose();
+                        onNavTap('experience');
+                      },
+                    ),
+                    _DrawerLink(
+                      number: '06',
+                      label: 'Contact',
+                      onTap: () {
+                        onClose();
+                        onNavTap('contact');
+                      },
+                    ),
+
+                    SizedBox(height: 28),
+
+                    // Bottom Dossier Panel
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        border: Border.all(color: AppColors.hairline),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'SUDHANSHU SINGH',
+                            style: AppTypography.monoLabel(
+                              fontSize: 12,
+                              color: AppColors.textPrimary,
+                            ).copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            '${PortfolioData.company} • ${PortfolioData.location}',
+                            style: AppTypography.monoLabel(
+                              fontSize: 10.5,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: AccessibleAction(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                onClose();
+                                onResumeTap();
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                constraints: BoxConstraints(minHeight: 44),
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceElevated,
+                                  border: Border.all(color: AppColors.hairline),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'VIEW RESUME ↗',
+                                  style: AppTypography.monoLabel(
+                                    fontSize: 11.5,
+                                    color: AppColors.textPrimary,
+                                  ).copyWith(fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -293,17 +317,20 @@ class _DrawerLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: GestureDetector(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Row(
           children: [
             Text(
               number,
-              style: AppTypography.monoNumber(fontSize: 12, color: AppColors.accent),
+              style: AppTypography.monoNumber(
+                fontSize: 12,
+                color: AppColors.accent,
+              ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14),
             Text(
               label,
               style: AppTypography.heroTitle(fontSize: 26, italic: false),

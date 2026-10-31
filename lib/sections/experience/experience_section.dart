@@ -24,7 +24,7 @@ class ExperienceSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionTitle(
+          SectionTitle(
             number: '04',
             title: 'Experience',
             subtitle:
@@ -35,9 +35,9 @@ class ExperienceSection extends StatelessWidget {
           // Editorial Career Ledger
           ListView.separated(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             itemCount: PortfolioData.experiences.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            separatorBuilder: (context, index) => SizedBox(height: 12),
             itemBuilder: (context, index) {
               final exp = PortfolioData.experiences[index];
               return _EditorialExperienceRow(
@@ -62,7 +62,8 @@ class _EditorialExperienceRow extends StatefulWidget {
   });
 
   @override
-  State<_EditorialExperienceRow> createState() => _EditorialExperienceRowState();
+  State<_EditorialExperienceRow> createState() =>
+      _EditorialExperienceRowState();
 }
 
 class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
@@ -76,7 +77,14 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration:
+            WidgetsBinding
+                .instance
+                .platformDispatcher
+                .accessibilityFeatures
+                .disableAnimations
+            ? Duration.zero
+            : Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
         padding: EdgeInsets.symmetric(
           horizontal: widget.isMobile ? 16.0 : 28.0,
@@ -115,22 +123,25 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
                   color: isCurrent ? AppColors.accent : AppColors.textDim,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6),
               if (isCurrent)
-                const LuxuryBadge(
+                LuxuryBadge(
                   label: 'CURRENT ROLE',
                   dotColor: AppColors.liveGreen,
                 )
               else
                 Text(
                   'PREVIOUS',
-                  style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textDim),
+                  style: AppTypography.monoLabel(
+                    fontSize: 10,
+                    color: AppColors.textDim,
+                  ),
                 ),
             ],
           ),
         ),
 
-        const SizedBox(width: 24),
+        SizedBox(width: 24),
 
         // Column 2: Company + Role + Location
         Expanded(
@@ -144,7 +155,7 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
                   color: _isHovered ? AppColors.accent : AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Text(
                 widget.experience.role.toUpperCase(),
                 style: AppTypography.monoLabel(
@@ -152,16 +163,19 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
                   color: AppColors.textPrimary,
                 ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.0),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(
                 widget.experience.location,
-                style: AppTypography.monoLabel(fontSize: 10.5, color: AppColors.textMuted),
+                style: AppTypography.monoLabel(
+                  fontSize: 10.5,
+                  color: AppColors.textMuted,
+                ),
               ),
             ],
           ),
         ),
 
-        const SizedBox(width: 28),
+        SizedBox(width: 28),
 
         // Column 3: Factual Responsibilities & Technologies
         Expanded(
@@ -173,14 +187,14 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
                 widget.experience.summary,
                 style: AppTypography.bodyMedium(height: 1.6),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
                 children: widget.experience.technologies.map((tech) {
                   return LuxuryBadge(
                     label: tech,
-                    backgroundColor: const Color(0x0AFFFFFF),
+                    backgroundColor: Color(0x0AFFFFFF),
                     borderColor: AppColors.hairline,
                   );
                 }).toList(),
@@ -207,19 +221,19 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
               ),
             ),
             if (isCurrent)
-              const LuxuryBadge(
-                label: 'CURRENT ROLE',
-                dotColor: AppColors.liveGreen,
-              )
+              LuxuryBadge(label: 'CURRENT ROLE', dotColor: AppColors.liveGreen)
             else
               Text(
                 'PREVIOUS',
-                style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textDim),
+                style: AppTypography.monoLabel(
+                  fontSize: 10,
+                  color: AppColors.textDim,
+                ),
               ),
           ],
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         Text(
           widget.experience.company,
@@ -227,7 +241,7 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
             color: _isHovered ? AppColors.accent : AppColors.textPrimary,
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         Text(
           widget.experience.role.toUpperCase(),
           style: AppTypography.monoLabel(
@@ -235,20 +249,23 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
             color: AppColors.accent,
           ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.8),
         ),
-        const SizedBox(height: 3),
+        SizedBox(height: 3),
         Text(
           widget.experience.location,
-          style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textMuted),
+          style: AppTypography.monoLabel(
+            fontSize: 10,
+            color: AppColors.textMuted,
+          ),
         ),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
 
         Text(
           widget.experience.summary,
           style: AppTypography.bodyMedium(height: 1.55),
         ),
 
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
 
         Wrap(
           spacing: 6,
@@ -256,7 +273,7 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
           children: widget.experience.technologies.map((tech) {
             return LuxuryBadge(
               label: tech,
-              backgroundColor: const Color(0x0AFFFFFF),
+              backgroundColor: Color(0x0AFFFFFF),
               borderColor: AppColors.hairline,
             );
           }).toList(),

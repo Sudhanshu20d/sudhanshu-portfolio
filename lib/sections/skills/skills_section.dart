@@ -16,26 +16,78 @@ class SkillsSection extends StatelessWidget {
 
     final Map<String, List<Map<String, String>>> skillCategories = {
       '01 / RUNTIMES & SDK': [
-        {'name': 'Flutter', 'role': 'Cross-Platform Framework', 'level': 'Core'},
+        {
+          'name': 'Flutter',
+          'role': 'Cross-Platform Framework',
+          'level': 'Core',
+        },
         {'name': 'Dart', 'role': 'Object-Oriented Language', 'level': 'Core'},
-        {'name': 'Android Native', 'role': 'Platform SDK & Manifests', 'level': 'Platform'},
+        {
+          'name': 'Android Native',
+          'role': 'Platform SDK & Manifests',
+          'level': 'Platform',
+        },
       ],
       '02 / STATE & ARCHITECTURE': [
-        {'name': 'BLoC Pattern', 'role': 'Predictable Reactive State', 'level': 'Production'},
-        {'name': 'Provider', 'role': 'Dependency Injection & State', 'level': 'Production'},
-        {'name': 'Clean Architecture', 'role': 'Modular Repository Pattern', 'level': 'Discipline'},
+        {
+          'name': 'BLoC Pattern',
+          'role': 'Predictable Reactive State',
+          'level': 'Production',
+        },
+        {
+          'name': 'Provider',
+          'role': 'Dependency Injection & State',
+          'level': 'Production',
+        },
+        {
+          'name': 'Clean Architecture',
+          'role': 'Modular Repository Pattern',
+          'level': 'Discipline',
+        },
       ],
       '03 / DATA & NETWORKING': [
-        {'name': 'REST APIs', 'role': 'HTTP Client & JSON Parsing', 'level': 'Integration'},
-        {'name': 'SQLite', 'role': 'Relational Local DB', 'level': 'Offline First'},
-        {'name': 'Hive', 'role': 'Fast Key-Value NoSQL Store', 'level': 'Cache'},
-        {'name': 'Firebase', 'role': 'Auth, Firestore & Push', 'level': 'Cloud'},
+        {
+          'name': 'REST APIs',
+          'role': 'HTTP Client & JSON Parsing',
+          'level': 'Integration',
+        },
+        {
+          'name': 'SQLite',
+          'role': 'Relational Local DB',
+          'level': 'Offline First',
+        },
+        {
+          'name': 'Hive',
+          'role': 'Fast Key-Value NoSQL Store',
+          'level': 'Cache',
+        },
+        {
+          'name': 'Firebase',
+          'role': 'Auth, Firestore & Push',
+          'level': 'Cloud',
+        },
       ],
       '04 / STUDIO TOOLKIT': [
-        {'name': 'Git & GitHub', 'role': 'Version Control & Releases', 'level': 'Standard'},
-        {'name': 'Android Studio', 'role': 'Profiling & Emulation', 'level': 'IDE'},
-        {'name': 'VS Code', 'role': 'Dart Tooling & Linting', 'level': 'Daily Driver'},
-        {'name': 'Figma', 'role': 'Design Specs & Vector Export', 'level': 'UI/UX Specs'},
+        {
+          'name': 'Git & GitHub',
+          'role': 'Version Control & Releases',
+          'level': 'Standard',
+        },
+        {
+          'name': 'Android Studio',
+          'role': 'Profiling & Emulation',
+          'level': 'IDE',
+        },
+        {
+          'name': 'VS Code',
+          'role': 'Dart Tooling & Linting',
+          'level': 'Daily Driver',
+        },
+        {
+          'name': 'Figma',
+          'role': 'Design Specs & Vector Export',
+          'level': 'UI/UX Specs',
+        },
       ],
     };
 
@@ -43,9 +95,9 @@ class SkillsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Textural Editorial Ticker
-        const MarqueeStrip(items: PortfolioData.marqueeSkills),
+        MarqueeStrip(items: PortfolioData.marqueeSkills),
 
-        const SizedBox(height: 36),
+        SizedBox(height: 36),
 
         Padding(
           padding: EdgeInsets.symmetric(
@@ -55,21 +107,27 @@ class SkillsSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SectionTitle(
+              SectionTitle(
                 number: '03 / TOOLKIT & SPECS',
                 title: 'Technical Capabilities',
                 subtitle:
                     'Engineered around modern cross-platform development, robust local storage, and scalable mobile architecture.',
                 isItalic: true,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
 
               // Architectural Matrix
               if (isMobile)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: skillCategories.entries
-                      .map((entry) => _buildCategoryGroup(entry.key, entry.value, isMobile))
+                      .map(
+                        (entry) => _buildCategoryGroup(
+                          entry.key,
+                          entry.value,
+                          isMobile,
+                        ),
+                      )
                       .toList(),
                 )
               else
@@ -84,7 +142,7 @@ class SkillsSection extends StatelessWidget {
                             skillCategories.values.elementAt(0),
                             isMobile,
                           ),
-                          const SizedBox(height: 28),
+                          SizedBox(height: 28),
                           _buildCategoryGroup(
                             skillCategories.keys.elementAt(2),
                             skillCategories.values.elementAt(2),
@@ -93,7 +151,7 @@ class SkillsSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 40),
+                    SizedBox(width: 40),
                     Expanded(
                       child: Column(
                         children: [
@@ -102,7 +160,7 @@ class SkillsSection extends StatelessWidget {
                             skillCategories.values.elementAt(1),
                             isMobile,
                           ),
-                          const SizedBox(height: 28),
+                          SizedBox(height: 28),
                           _buildCategoryGroup(
                             skillCategories.keys.elementAt(3),
                             skillCategories.values.elementAt(3),
@@ -130,8 +188,8 @@ class SkillsSection extends StatelessWidget {
       children: [
         // Category Header (Safe against overflow)
         Container(
-          padding: const EdgeInsets.only(bottom: 10),
-          decoration: const BoxDecoration(
+          padding: EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: AppColors.hairline)),
           ),
           child: Row(
@@ -148,10 +206,13 @@ class SkillsSection extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 '${items.length} MODULES',
-                style: AppTypography.monoLabel(fontSize: 9.5, color: AppColors.textDim),
+                style: AppTypography.monoLabel(
+                  fontSize: 9.5,
+                  color: AppColors.textDim,
+                ),
               ),
             ],
           ),
@@ -159,7 +220,7 @@ class SkillsSection extends StatelessWidget {
 
         // Items List
         ...items.map((item) => _SkillLedgerRow(item: item)),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
       ],
     );
   }
@@ -183,14 +244,23 @@ class _SkillLedgerRowState extends State<_SkillLedgerRow> {
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        duration:
+            WidgetsBinding
+                .instance
+                .platformDispatcher
+                .accessibilityFeatures
+                .disableAnimations
+            ? Duration.zero
+            : Duration(milliseconds: 160),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         decoration: BoxDecoration(
           color: _isHovered ? AppColors.surface : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
           border: Border(
             bottom: BorderSide(
-              color: _isHovered ? AppColors.accent.withValues(alpha: 0.4) : AppColors.hairline,
+              color: _isHovered
+                  ? AppColors.accent.withValues(alpha: 0.4)
+                  : AppColors.hairline,
               width: 0.8,
             ),
           ),
@@ -204,11 +274,13 @@ class _SkillLedgerRowState extends State<_SkillLedgerRow> {
                   Text(
                     widget.item['name']!,
                     style: AppTypography.cardTitle(fontSize: 17).copyWith(
-                      color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                      color: _isHovered
+                          ? AppColors.accent
+                          : AppColors.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
                     widget.item['role']!,
                     style: AppTypography.bodySmall(color: AppColors.textMuted),
@@ -217,11 +289,11 @@ class _SkillLedgerRowState extends State<_SkillLedgerRow> {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+              padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
               decoration: BoxDecoration(
-                color: _isHovered ? const Color(0x1FA78BFA) : const Color(0x0CFFFFFF),
+                color: _isHovered ? AppColors.accentSubtle : Color(0x0CFFFFFF),
                 borderRadius: BorderRadius.circular(3),
                 border: Border.all(
                   color: _isHovered ? AppColors.accent : AppColors.hairline,

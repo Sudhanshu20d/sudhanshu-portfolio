@@ -6,7 +6,7 @@ class LuxuryBadge extends StatelessWidget {
   final String label;
   final IconData? icon;
   final Color? dotColor;
-  final Color borderColor;
+  final Color? borderColor;
   final Color backgroundColor;
 
   const LuxuryBadge({
@@ -14,18 +14,18 @@ class LuxuryBadge extends StatelessWidget {
     required this.label,
     this.icon,
     this.dotColor,
-    this.borderColor = AppColors.border,
+    this.borderColor,
     this.backgroundColor = const Color(0x12FFFFFF),
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: borderColor, width: 1),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: borderColor ?? AppColors.border, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -39,17 +39,19 @@ class LuxuryBadge extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-            const SizedBox(width: 7),
+            SizedBox(width: 7),
           ],
           if (icon != null) ...[
             Icon(icon, size: 11, color: AppColors.accent),
-            const SizedBox(width: 5),
+            SizedBox(width: 5),
           ],
           Flexible(
             child: Text(
               label.toUpperCase(),
-              style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textPrimary)
-                  .copyWith(fontWeight: FontWeight.w500, letterSpacing: 0.8),
+              style: AppTypography.monoLabel(
+                fontSize: 10,
+                color: AppColors.textPrimary,
+              ).copyWith(fontWeight: FontWeight.w500, letterSpacing: 0.8),
               overflow: TextOverflow.ellipsis,
             ),
           ),

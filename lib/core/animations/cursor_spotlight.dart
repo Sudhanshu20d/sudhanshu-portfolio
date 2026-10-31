@@ -18,7 +18,7 @@ class BackgroundGridPainter extends CustomPainter {
 
     // Draw moving editorial grid
     final gridPaint = Paint()
-      ..color = const Color(0x08FFFFFF)
+      ..color = AppColors.hairline.withValues(alpha: 0.28)
       ..strokeWidth = 1.0;
 
     const double step = 60.0;
@@ -37,12 +37,10 @@ class BackgroundGridPainter extends CustomPainter {
             (mousePosition.dx / size.width) * 2 - 1,
             (mousePosition.dy / size.height) * 2 - 1,
           ),
-          radius: spotlightRadius / (size.shortestSide > 0 ? size.shortestSide : 1),
-          colors: const [
-            Color(0x0CA78BFA),
-            Colors.transparent,
-          ],
-          stops: const [0.0, 1.0],
+          radius:
+              spotlightRadius / (size.shortestSide > 0 ? size.shortestSide : 1),
+          colors: [AppColors.accentSubtle, Colors.transparent],
+          stops: [0.0, 1.0],
         ).createShader(Offset.zero & size);
 
       canvas.drawRect(Offset.zero & size, spotlightPaint);

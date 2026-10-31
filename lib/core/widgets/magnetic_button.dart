@@ -1,3 +1,4 @@
+import 'accessible_action.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../theme/app_colors.dart';
@@ -42,7 +43,9 @@ class _MagneticButtonState extends State<MagneticButton> {
     switch (widget.style) {
       case MagneticButtonStyle.primary:
         bgColor = _isHovered ? AppColors.accent : AppColors.textPrimary;
-        textColor = const Color(0xFF0B0B0E); // Deep black contrast
+        textColor = _isHovered
+            ? Color(0xFF0B0B0C)
+            : AppColors.background; // Deep black contrast
         border = Border.all(
           color: _isHovered ? AppColors.accent : AppColors.textPrimary,
           width: 1,
@@ -50,7 +53,7 @@ class _MagneticButtonState extends State<MagneticButton> {
         break;
 
       case MagneticButtonStyle.secondary:
-        bgColor = _isHovered ? const Color(0xFF1E1E26) : const Color(0xFF141419);
+        bgColor = _isHovered ? AppColors.surface : AppColors.surface;
         textColor = AppColors.textPrimary;
         border = Border.all(
           color: _isHovered ? AppColors.accent : AppColors.borderLight,
@@ -59,7 +62,7 @@ class _MagneticButtonState extends State<MagneticButton> {
         break;
 
       case MagneticButtonStyle.outline:
-        bgColor = _isHovered ? const Color(0x15A78BFA) : Colors.transparent;
+        bgColor = _isHovered ? AppColors.accentSubtle : Colors.transparent;
         textColor = _isHovered ? AppColors.accent : AppColors.textPrimary;
         border = Border.all(
           color: _isHovered ? AppColors.accent : AppColors.borderLight,
@@ -75,13 +78,23 @@ class _MagneticButtonState extends State<MagneticButton> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
+          duration:
+              WidgetsBinding
+                  .instance
+                  .platformDispatcher
+                  .accessibilityFeatures
+                  .disableAnimations
+              ? Duration.zero
+              : Duration(milliseconds: 180),
           curve: Curves.easeOutCubic,
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(6),
@@ -97,14 +110,14 @@ class _MagneticButtonState extends State<MagneticButton> {
                   size: widget.isSmall ? 14 : 16,
                   color: textColor,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
               ] else if (widget.prefixIcon != null) ...[
                 Icon(
                   widget.prefixIcon,
                   size: widget.isSmall ? 14 : 16,
                   color: textColor,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
               ],
               Flexible(
                 child: Text(
@@ -117,10 +130,21 @@ class _MagneticButtonState extends State<MagneticButton> {
                 ),
               ),
               if (widget.icon != null) ...[
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  transform: Matrix4.translationValues(_isHovered ? 3 : 0, 0, 0),
+                  duration:
+                      WidgetsBinding
+                          .instance
+                          .platformDispatcher
+                          .accessibilityFeatures
+                          .disableAnimations
+                      ? Duration.zero
+                      : Duration(milliseconds: 200),
+                  transform: Matrix4.translationValues(
+                    _isHovered ? 3 : 0,
+                    0,
+                    0,
+                  ),
                   child: Icon(
                     widget.icon,
                     size: widget.isSmall ? 14 : 16,

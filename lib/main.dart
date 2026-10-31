@@ -1,4 +1,8 @@
+import 'core/widgets/difference_header.dart';
+import 'core/animations/scroll_reveal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/semantics.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'core/animations/cursor_spotlight.dart';
 import 'core/animations/marquee_strip.dart';
@@ -18,11 +22,37 @@ import 'sections/projects/private_projects.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const PortfolioApp());
+  runApp(PortfolioApp());
 }
 
-class PortfolioApp extends StatelessWidget {
+class PortfolioApp extends StatefulWidget {
   const PortfolioApp({super.key});
+
+  @override
+  State<PortfolioApp> createState() => _PortfolioAppState();
+}
+
+class _PortfolioAppState extends State<PortfolioApp>
+    with WidgetsBindingObserver {
+  SemanticsHandle? _webSemantics;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (kIsWeb) _webSemantics = SemanticsBinding.instance.ensureSemantics();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _webSemantics?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +60,17 @@ class PortfolioApp extends StatelessWidget {
       title: 'Sudhanshu Singh — Flutter Developer',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.dark,
+        brightness: AppColors.isLight ? Brightness.light : Brightness.dark,
+        colorSchemeSeed: AppColors.accent,
+        focusColor: AppColors.accentSubtle,
         scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
       ),
-      home: const PortfolioHomePage(),
+      builder: (context, child) => TickerMode(
+        enabled: !MediaQuery.disableAnimationsOf(context),
+        child: child!,
+      ),
+      home: PortfolioHomePage(),
     );
   }
 }
@@ -85,20 +121,21 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   }
 
   void _detectActiveSection() {
-    final offset = _scrollController.offset;
-    if (offset < 500) {
-      if (_activeSection != 'hero') setState(() => _activeSection = 'hero');
-    } else if (offset < 1500) {
-      if (_activeSection != 'apps') setState(() => _activeSection = 'apps');
-    } else if (offset < 2400) {
-      if (_activeSection != 'projects') setState(() => _activeSection = 'projects');
-    } else if (offset < 3200) {
-      if (_activeSection != 'about') setState(() => _activeSection = 'about');
-    } else if (offset < 4000) {
-      if (_activeSection != 'experience') setState(() => _activeSection = 'experience');
-    } else {
-      if (_activeSection != 'contact') setState(() => _activeSection = 'contact');
+    final sections = {
+      'hero': _heroKey,
+      'apps': _appsKey,
+      'projects': _projectsKey,
+      'about': _aboutKey,
+      'experience': _experienceKey,
+      'contact': _contactKey,
+    };
+    String active = 'hero';
+    for (final entry in sections.entries) {
+      final box = entry.value.currentContext?.findRenderObject();
+      if (box is RenderBox && box.localToGlobal(Offset.zero).dy <= 160)
+        active = entry.key;
     }
+    if (_activeSection != active) setState(() => _activeSection = active);
   }
 
   void _scrollToSection(String section) {
@@ -125,9 +162,18 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     }
 
     if (targetKey != null && targetKey.currentContext != null) {
-      Scrollable.ensureVisible(
-        targetKey.currentContext!,
-        duration: const Duration(milliseconds: 700),
+      final box = targetKey.currentContext!.findRenderObject() as RenderBox;
+      final headerHeight = MediaQuery.paddingOf(context).top + 80;
+      final target =
+          (_scrollController.offset +
+                  box.localToGlobal(Offset.zero).dy -
+                  headerHeight)
+              .clamp(0.0, _scrollController.position.maxScrollExtent);
+      _scrollController.animateTo(
+        target,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : Duration(milliseconds: 700),
         curve: Curves.easeInOutCubic,
       );
     }
@@ -136,7 +182,9 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
-      duration: const Duration(milliseconds: 800),
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : Duration(milliseconds: 800),
       curve: Curves.easeInOutCubic,
     );
   }
@@ -174,76 +222,82 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             if (!isMobile)
               Positioned.fill(
                 child: CustomPaint(
-                  painter: BackgroundGridPainter(
-                    mousePosition: _mousePosition,
-                  ),
+                  painter: BackgroundGridPainter(mousePosition: _mousePosition),
                 ),
               ),
 
             // Scrollable Content
             Positioned.fill(
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Column(
-                  children: [
-                    SizedBox(height: isMobile ? MediaQuery.of(context).padding.top + 64 : 72),
-
-                    // Hero Section / Index
-                    Container(
-                      key: _heroKey,
-                      child: HeroSection(
-                        mousePosition: _mousePosition,
-                        onViewProjectsTap: () => _scrollToSection('apps'),
-                        onResumeTap: () => ResumeModal.show(context),
-                        onGithubTap: () => _launchUrl(PortfolioData.githubUrl),
+              child: SafeArea(
+                top: false,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: isMobile
+                            ? MediaQuery.of(context).padding.top + 72
+                            : 72,
                       ),
-                    ),
 
-                    // Subtle Editorial Marquee Strip
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24.0),
-                      child: MarqueeStrip(items: PortfolioData.marqueeSkills),
-                    ),
+                      // Hero Section / Index
+                      Container(
+                        key: _heroKey,
+                        child: HeroSection(
+                          mousePosition: _mousePosition,
+                          onViewProjectsTap: () => _scrollToSection('apps'),
+                          onResumeTap: () => ResumeModal.show(context),
+                          onGithubTap: () =>
+                              _launchUrl(PortfolioData.githubUrl),
+                        ),
+                      ),
 
-                    // 01. Apps (Vapi Startup Community, Bhajan & Kirtan)
-                    Container(
-                      key: _appsKey,
-                      child: const FeaturedProjectsSection(),
-                    ),
+                      // Subtle Editorial Marquee Strip
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24.0),
+                        child: MarqueeStrip(items: PortfolioData.marqueeSkills),
+                      ),
 
-                    // 02. Selected Projects (Animal Pop Kids, CRM365, Saifee Milk)
-                    Container(
-                      key: _projectsKey,
-                      child: const PrivateProjectsSection(),
-                    ),
+                      // 01. Apps (Vapi Startup Community, Bhajan & Kirtan)
+                      Container(
+                        key: _appsKey,
+                        child: ScrollReveal(child: FeaturedProjectsSection()),
+                      ),
 
-                    // 03. About Section
-                    Container(
-                      key: _aboutKey,
-                      child: const AboutSection(),
-                    ),
+                      // 02. Selected Projects (Animal Pop Kids, CRM365, Saifee Milk)
+                      Container(
+                        key: _projectsKey,
+                        child: ScrollReveal(child: PrivateProjectsSection()),
+                      ),
 
-                    // 04. Experience Section
-                    Container(
-                      key: _experienceKey,
-                      child: const ExperienceSection(),
-                    ),
+                      // 03. About Section
+                      Container(
+                        key: _aboutKey,
+                        child: ScrollReveal(child: AboutSection()),
+                      ),
 
-                    // 05. GitHub Section (Terminal CLI view)
-                    const GitHubSection(),
+                      // 04. Experience Section
+                      Container(
+                        key: _experienceKey,
+                        child: ScrollReveal(child: ExperienceSection()),
+                      ),
 
-                    // 06. Contact Section
-                    Container(
-                      key: _contactKey,
-                      child: const ContactSection(),
-                    ),
+                      // 05. GitHub Section (Terminal CLI view)
+                      ScrollReveal(child: GitHubSection()),
 
-                    // Footer
-                    FooterSection(
-                      onScrollToTop: _scrollToTop,
-                      onNavTap: _scrollToSection,
-                    ),
-                  ],
+                      // 06. Contact Section
+                      Container(
+                        key: _contactKey,
+                        child: ScrollReveal(child: ContactSection()),
+                      ),
+
+                      // Footer
+                      FooterSection(
+                        onScrollToTop: _scrollToTop,
+                        onNavTap: _scrollToSection,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -260,9 +314,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                   alignment: Alignment.centerLeft,
                   widthFactor: _scrollProgress,
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: AppColors.accent,
-                    ),
+                    decoration: BoxDecoration(color: AppColors.accent),
                   ),
                 ),
               ),
@@ -273,18 +325,27 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
               top: 2.0,
               left: 0,
               right: 0,
-              child: isMobile
-                  ? MobileNavbar(
-                      isScrolled: _isScrolled,
-                      onOpenMenu: () => setState(() => _isMobileMenuOpen = true),
-                      onResumeTap: () => ResumeModal.show(context),
-                    )
-                  : DesktopNavbar(
-                      isScrolled: _isScrolled,
-                      activeSection: _activeSection,
-                      onNavTap: _scrollToSection,
-                      onResumeTap: () => ResumeModal.show(context),
-                    ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  border: Border(bottom: BorderSide(color: AppColors.hairline)),
+                ),
+                child: DifferenceHeader(
+                  child: isMobile
+                      ? MobileNavbar(
+                          isScrolled: _isScrolled,
+                          onOpenMenu: () =>
+                              setState(() => _isMobileMenuOpen = true),
+                          onResumeTap: () => ResumeModal.show(context),
+                        )
+                      : DesktopNavbar(
+                          isScrolled: _isScrolled,
+                          activeSection: _activeSection,
+                          onNavTap: _scrollToSection,
+                          onResumeTap: () => ResumeModal.show(context),
+                        ),
+                ),
+              ),
             ),
 
             // Fullscreen Mobile Drawer

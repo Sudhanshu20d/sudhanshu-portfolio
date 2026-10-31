@@ -1,4 +1,4 @@
-import 'dart:ui';
+import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../core/theme/app_colors.dart';
@@ -24,11 +24,18 @@ class DesktopNavbar extends StatelessWidget {
     final horizontalPadding = screenWidth < 1120 ? 24.0 : 48.0;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+      duration:
+          WidgetsBinding
+              .instance
+              .platformDispatcher
+              .accessibilityFeatures
+              .disableAnimations
+          ? Duration.zero
+          : Duration(milliseconds: 200),
       curve: Curves.easeOutCubic,
       height: 72,
       decoration: BoxDecoration(
-        color: isScrolled ? AppColors.surfaceGlass : Colors.transparent,
+        color: Colors.transparent,
         border: Border(
           bottom: BorderSide(
             color: isScrolled ? AppColors.hairline : Colors.transparent,
@@ -37,81 +44,97 @@ class DesktopNavbar extends StatelessWidget {
         ),
       ),
       child: ClipRect(
-        child: BackdropFilter(
-          filter: isScrolled
-              ? ImageFilter.blur(sigmaX: 16, sigmaY: 16)
-              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: Row(
-              children: [
-                // Left: Minimal SD. Monogram
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () => onNavTap('hero'),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '${PortfolioData.monogram}.',
-                          style: AppTypography.displayHeading(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.5,
-                            color: AppColors.textPrimary,
-                          ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: Row(
+            children: [
+              // Left: Minimal SD. Monogram
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: AccessibleAction(
+                  onTap: () => onNavTap('hero'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${PortfolioData.monogram}.',
+                        style: AppTypography.displayHeading(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.5,
+                          color: AppColors.textPrimary,
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: 12),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            PortfolioData.name,
+                            style: AppTypography.bodySmall(
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'FLUTTER DEVELOPER',
+                            style: AppTypography.monoLabel(
+                              fontSize: 9,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
+              ),
 
-                const Spacer(),
+              Spacer(),
 
-                // Right: Editorial Minimal Nav Links
-                _MinimalNavLink(
-                  label: 'Index',
-                  isActive: activeSection == 'hero',
-                  onTap: () => onNavTap('hero'),
-                ),
-                const SizedBox(width: 24),
-                _MinimalNavLink(
-                  label: 'Apps',
-                  isActive: activeSection == 'apps',
-                  onTap: () => onNavTap('apps'),
-                ),
-                const SizedBox(width: 24),
-                _MinimalNavLink(
-                  label: 'Projects',
-                  isActive: activeSection == 'projects',
-                  onTap: () => onNavTap('projects'),
-                ),
-                const SizedBox(width: 24),
-                _MinimalNavLink(
-                  label: 'About',
-                  isActive: activeSection == 'about',
-                  onTap: () => onNavTap('about'),
-                ),
-                const SizedBox(width: 24),
-                _MinimalNavLink(
-                  label: 'Experience',
-                  isActive: activeSection == 'experience',
-                  onTap: () => onNavTap('experience'),
-                ),
-                const SizedBox(width: 24),
-                _MinimalNavLink(
-                  label: 'Contact',
-                  isActive: activeSection == 'contact',
-                  onTap: () => onNavTap('contact'),
-                ),
+              // Right: Editorial Minimal Nav Links
+              _MinimalNavLink(
+                label: 'Index',
+                isActive: activeSection == 'hero',
+                onTap: () => onNavTap('hero'),
+              ),
+              SizedBox(width: screenWidth < 1120 ? 14 : 24),
+              _MinimalNavLink(
+                label: 'Apps',
+                isActive: activeSection == 'apps',
+                onTap: () => onNavTap('apps'),
+              ),
+              SizedBox(width: screenWidth < 1120 ? 14 : 24),
+              _MinimalNavLink(
+                label: 'Projects',
+                isActive: activeSection == 'projects',
+                onTap: () => onNavTap('projects'),
+              ),
+              SizedBox(width: screenWidth < 1120 ? 14 : 24),
+              _MinimalNavLink(
+                label: 'About',
+                isActive: activeSection == 'about',
+                onTap: () => onNavTap('about'),
+              ),
+              SizedBox(width: screenWidth < 1120 ? 14 : 24),
+              _MinimalNavLink(
+                label: 'Experience',
+                isActive: activeSection == 'experience',
+                onTap: () => onNavTap('experience'),
+              ),
+              SizedBox(width: screenWidth < 1120 ? 14 : 24),
+              _MinimalNavLink(
+                label: 'Contact',
+                isActive: activeSection == 'contact',
+                onTap: () => onNavTap('contact'),
+              ),
 
-                const SizedBox(width: 32),
+              SizedBox(width: 32),
 
-                // Rectangular Resume / CV Button
-                _MinimalCvButton(onTap: onResumeTap),
-              ],
-            ),
+              // Rectangular Resume / CV Button
+              _MinimalCvButton(onTap: onResumeTap),
+            ],
           ),
         ),
       ),
@@ -145,22 +168,29 @@ class _MinimalNavLinkState extends State<_MinimalNavLink> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         onTap: widget.onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: AnimatedContainer(
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : Duration(milliseconds: 180),
+          padding: EdgeInsets.symmetric(vertical: 12.0),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: widget.isActive ? AppColors.accent : (_isHovered ? AppColors.borderLight : Colors.transparent),
+                color: isHighlighted ? AppColors.accent : Colors.transparent,
                 width: 1.5,
               ),
             ),
           ),
           child: Text(
-            widget.label,
-            style: AppTypography.bodyMedium(
-              color: isHighlighted ? AppColors.textPrimary : AppColors.textMuted,
+            widget.label.toUpperCase(),
+            style: AppTypography.monoLabel(
+              fontSize: 11,
+              letterSpacing: 0.6,
+              color: isHighlighted
+                  ? AppColors.textPrimary
+                  : AppColors.textMuted,
               fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
@@ -187,13 +217,20 @@ class _MinimalCvButtonState extends State<_MinimalCvButton> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          duration:
+              WidgetsBinding
+                  .instance
+                  .platformDispatcher
+                  .accessibilityFeatures
+                  .disableAnimations
+              ? Duration.zero
+              : Duration(milliseconds: 150),
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: _isHovered ? AppColors.surfaceElevated : Colors.transparent,
+            color: Colors.transparent,
             border: Border.all(
               color: _isHovered ? AppColors.accent : AppColors.hairline,
               width: 1,

@@ -28,11 +28,7 @@ class SectionTitle extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Top Hairline Rule
-        Container(
-          width: double.infinity,
-          height: 1,
-          color: AppColors.hairline,
-        ),
+        Container(width: double.infinity, height: 1, color: AppColors.hairline),
         SizedBox(height: isMobile ? 24 : 36),
 
         // Editorial Heading: e.g. "02  Selected projects"
@@ -64,9 +60,9 @@ class SectionTitle extends StatelessWidget {
 
         // Editorial Subtitle
         if (subtitle != null) ...[
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 680),
+            constraints: BoxConstraints(maxWidth: 680),
             child: Text(
               subtitle!,
               style: AppTypography.bodyLarge(

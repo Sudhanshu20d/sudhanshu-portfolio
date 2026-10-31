@@ -10,6 +10,7 @@ class ProjectModel {
   final List<String> technologies;
   final String iconAsset;
   final List<String> screenshotAssets;
+  final List<String> iosScreenshotAssets;
   final String? playStoreUrl;
   final String? appStoreUrl;
   final String? githubUrl;
@@ -25,6 +26,7 @@ class ProjectModel {
     required this.technologies,
     required this.iconAsset,
     required this.screenshotAssets,
+    this.iosScreenshotAssets = const [],
     this.playStoreUrl,
     this.appStoreUrl,
     this.githubUrl,

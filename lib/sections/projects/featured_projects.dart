@@ -1,4 +1,5 @@
-import 'dart:math' as math;
+import '../../core/widgets/work_hover_group.dart';
+import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/portfolio_data.dart';
@@ -13,7 +14,10 @@ class FeaturedProjectsSection extends StatelessWidget {
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
     try {
-      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
       if (!launched) {
         await launchUrl(uri);
       }
@@ -38,7 +42,7 @@ class FeaturedProjectsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Section Heading: 01  Apps
-          const SectionTitle(
+          SectionTitle(
             number: '01',
             title: 'Apps',
             subtitle:
@@ -48,51 +52,114 @@ class FeaturedProjectsSection extends StatelessWidget {
           SizedBox(height: isMobile ? 36 : 64),
 
           // Apps Editorial Showcases
-          ...PortfolioData.publishedProjects.asMap().entries.map((entry) {
-            final project = entry.value;
+          WorkHoverGroup(
+            previews: PortfolioData.publishedProjects
+                .map(
+                  (p) =>
+                      (p.iosScreenshotAssets.isNotEmpty
+                              ? p.iosScreenshotAssets
+                              : p.screenshotAssets)
+                          .firstOrNull,
+                )
+                .toList(),
+            children: PortfolioData.publishedProjects.asMap().entries.map((
+              entry,
+            ) {
+              final project = entry.value;
 
-            return Padding(
-              padding: EdgeInsets.only(bottom: isMobile ? 48.0 : 96.0),
-              child: _EditorialAppBlock(
-                project: project,
-                isMobile: isMobile,
-                onPlayStoreTap: project.playStoreUrl != null
-                    ? () => _launchUrl(project.playStoreUrl!)
-                    : null,
-                onAppStoreTap: project.appStoreUrl != null
-                    ? () => _launchUrl(project.appStoreUrl!)
-                    : null,
-              ),
-            );
-          }),
+              return Padding(
+                padding: EdgeInsets.only(bottom: isMobile ? 48.0 : 96.0),
+                child: _EditorialAppBlock(
+                  project: project,
+                  index: entry.key + 1,
+                  isMobile: isMobile,
+                  onPlayStoreTap: project.playStoreUrl != null
+                      ? () => _launchUrl(project.playStoreUrl!)
+                      : null,
+                  onAppStoreTap: project.appStoreUrl != null
+                      ? () => _launchUrl(project.appStoreUrl!)
+                      : null,
+                ),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
   }
 }
 
-class _EditorialAppBlock extends StatelessWidget {
+class _EditorialAppBlock extends StatefulWidget {
   final ProjectModel project;
+  final int index;
   final bool isMobile;
   final VoidCallback? onPlayStoreTap;
   final VoidCallback? onAppStoreTap;
 
   const _EditorialAppBlock({
     required this.project,
+    required this.index,
     required this.isMobile,
     this.onPlayStoreTap,
     this.onAppStoreTap,
   });
 
   @override
+  State<_EditorialAppBlock> createState() => _EditorialAppBlockState();
+}
+
+class _EditorialAppBlockState extends State<_EditorialAppBlock> {
+  bool _hovered = false;
+  bool _showIos = true;
+  final ScrollController _galleryController = ScrollController(
+    keepScrollOffset: false,
+  );
+
+  @override
+  void dispose() {
+    _galleryController.dispose();
+    super.dispose();
+  }
+
+  void _selectPlatform(bool ios) {
+    if (_galleryController.hasClients) _galleryController.jumpTo(0);
+    setState(() => _showIos = ios);
+  }
+
+  void _scrollGallery(double direction) {
+    if (!_galleryController.hasClients) return;
+    final position = _galleryController.position;
+    _galleryController.animateTo(
+      (position.pixels + direction * position.viewportDimension * 0.85).clamp(
+        0.0,
+        position.maxScrollExtent,
+      ),
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  ProjectModel get project => widget.project;
+  bool get isMobile => widget.isMobile;
+  VoidCallback? get onPlayStoreTap => widget.onPlayStoreTap;
+  VoidCallback? get onAppStoreTap => widget.onAppStoreTap;
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final hasDualStore = project.playStoreUrl != null && project.appStoreUrl != null;
+    final hasDualStore =
+        project.playStoreUrl != null && project.appStoreUrl != null;
 
     final infoWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Text(
+          '${widget.index.toString().padLeft(2, '0')} / —',
+          style: AppTypography.monoLabel(),
+        ),
+        SizedBox(height: 20),
         // Square Icon with thin border
         Container(
           width: 52,
@@ -104,8 +171,9 @@ class _EditorialAppBlock extends StatelessWidget {
           child: ClipRect(
             child: Image.asset(
               project.iconAsset,
+              semanticLabel: '${project.title} app icon',
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Center(
+              errorBuilder: (context, error, stackTrace) => Center(
                 child: Text(
                   'ICON',
                   style: TextStyle(
@@ -120,7 +188,7 @@ class _EditorialAppBlock extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // Monospace Platform Tags: ANDROID   IOS
         Row(
@@ -137,24 +205,38 @@ class _EditorialAppBlock extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
 
         // Giant Bold Sans Title
         Text(
           project.title,
           style: AppTypography.displayHeading(
-            fontSize: isMobile ? (screenWidth < 360 ? 30 : 36) : 48,
+            fontSize: isMobile ? (screenWidth < 360 ? 34 : 42) : 64,
+            color: _hovered ? AppColors.accent : AppColors.textPrimary,
             fontWeight: FontWeight.w700,
             letterSpacing: -1.2,
             height: 1.02,
           ),
         ),
 
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: project.technologies
+              .map(
+                (tag) => Text(
+                  tag.toUpperCase(),
+                  style: AppTypography.monoLabel(fontSize: 10),
+                ),
+              )
+              .toList(),
+        ),
+        SizedBox(height: 16),
         // Short Editorial Description
         ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
+          constraints: BoxConstraints(maxWidth: 480),
           child: Text(
             project.description,
             style: AppTypography.bodyLarge(
@@ -164,7 +246,7 @@ class _EditorialAppBlock extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 28),
+        SizedBox(height: 28),
 
         // Rectangular Minimal Action Buttons: [ Google Play ↗ ]  [ App Store ↗ ]
         Wrap(
@@ -172,15 +254,9 @@ class _EditorialAppBlock extends StatelessWidget {
           runSpacing: 10,
           children: [
             if (onPlayStoreTap != null)
-              _RectAppButton(
-                text: 'Google Play ↗',
-                onTap: onPlayStoreTap!,
-              ),
+              _RectAppButton(text: 'Google Play ↗', onTap: onPlayStoreTap!),
             if (onAppStoreTap != null)
-              _RectAppButton(
-                text: 'App Store ↗',
-                onTap: onAppStoreTap!,
-              ),
+              _RectAppButton(text: 'App Store ↗', onTap: onAppStoreTap!),
           ],
         ),
       ],
@@ -192,87 +268,138 @@ class _EditorialAppBlock extends StatelessWidget {
     if (isMobile) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          infoWidget,
-          const SizedBox(height: 32),
-          screenshotsWidget,
-        ],
+        children: [infoWidget, SizedBox(height: 32), screenshotsWidget],
       );
     }
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Left Column: App details and controls
-        Expanded(
-          flex: 5,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 24.0),
-            child: infoWidget,
-          ),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: Container(
+        padding: EdgeInsets.only(top: 24),
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.hairline)),
         ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left Column: App details and controls
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: EdgeInsets.only(top: 24.0),
+                child: infoWidget,
+              ),
+            ),
 
-        const SizedBox(width: 48),
+            SizedBox(width: 48),
 
-        // Right Column: Staggered tall vertical phone screenshot mockups
-        Expanded(
-          flex: 7,
-          child: screenshotsWidget,
+            // Right Column: Staggered tall vertical phone screenshot mockups
+            Expanded(flex: 7, child: screenshotsWidget),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   Widget _buildScreenshotsLayout(BuildContext context) {
-    final screenshots = project.screenshotAssets;
+    final hasIos = project.iosScreenshotAssets.isNotEmpty;
+    final ios = hasIos && _showIos;
+    final screenshots = ios
+        ? project.iosScreenshotAssets
+        : project.screenshotAssets;
     if (screenshots.isEmpty) return const SizedBox.shrink();
+    final platform = ios ? 'iPhone / App Store' : 'Android / Google Play';
 
-    if (isMobile) {
-      // Horizontal scroll on mobile to avoid overflow and allow full viewing
-      return SizedBox(
-        height: 380,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: math.min(screenshots.length, 3),
-          separatorBuilder: (context, index) => const SizedBox(width: 14),
-          itemBuilder: (context, index) {
-            final offset = index == 1 ? 24.0 : (index == 2 ? 12.0 : 0.0);
-            return Padding(
-              padding: EdgeInsets.only(top: offset),
-              child: _TallScreenshotFrame(
-                imageAsset: screenshots[index],
-                width: 180,
-                height: 350,
-                index: index + 1,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (hasIos)
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              Semantics(
+                selected: ios,
+                child: TextButton(
+                  onPressed: () => _selectPlatform(true),
+                  child: Text(
+                    'iPhone / App Store',
+                    style: AppTypography.monoLabel(
+                      fontSize: 10,
+                      color: ios ? AppColors.accent : AppColors.textMuted,
+                    ),
+                  ),
+                ),
+              ),
+              Semantics(
+                selected: !ios,
+                child: TextButton(
+                  onPressed: () => _selectPlatform(false),
+                  child: Text(
+                    'Android / Google Play',
+                    style: AppTypography.monoLabel(
+                      fontSize: 10,
+                      color: !ios ? AppColors.accent : AppColors.textMuted,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        else
+          Text(
+            platform.toUpperCase(),
+            style: AppTypography.monoLabel(fontSize: 10),
+          ),
+        const SizedBox(height: 14),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final cardWidth = isMobile
+                ? (constraints.maxWidth * 0.7).clamp(160.0, 220.0)
+                : (constraints.maxWidth - 28) / 3;
+            final galleryHeight = isMobile ? 420.0 : 480.0;
+            return SizedBox(
+              height: galleryHeight + 16,
+              child: Scrollbar(
+                controller: _galleryController,
+                thumbVisibility: !isMobile,
+                child: ListView.separated(
+                  key: ValueKey('${project.id}-$ios'),
+                  controller: _galleryController,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(bottom: 16),
+                  itemCount: screenshots.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 14),
+                  itemBuilder: (context, index) => _TallScreenshotFrame(
+                    imageAsset: screenshots[index],
+                    width: cardWidth,
+                    height: galleryHeight,
+                    index: index + 1,
+                    semanticLabel:
+                        '${project.title}, $platform screenshot ${index + 1}',
+                  ),
+                ),
               ),
             );
           },
         ),
-      );
-    }
-
-    // Desktop: 3 Staggered tall columns side-by-side
-    final itemsCount = math.min(screenshots.length, 3);
-    final offsets = [0.0, 50.0, 25.0];
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(itemsCount, (index) {
-        return Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: offsets[index % offsets.length],
-              left: index == 0 ? 0 : 8,
-              right: index == itemsCount - 1 ? 0 : 8,
+        Row(
+          children: [
+            const Spacer(),
+            IconButton(
+              tooltip: 'Previous ${project.title} screenshots',
+              onPressed: () => _scrollGallery(-1),
+              icon: const Icon(Icons.arrow_back),
             ),
-            child: _TallScreenshotFrame(
-              imageAsset: screenshots[index],
-              height: 480,
-              index: index + 1,
+            IconButton(
+              tooltip: 'Next ${project.title} screenshots',
+              onPressed: () => _scrollGallery(1),
+              icon: const Icon(Icons.arrow_forward),
             ),
-          ),
-        );
-      }),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -282,9 +409,11 @@ class _TallScreenshotFrame extends StatelessWidget {
   final double? width;
   final double height;
   final int index;
+  final String semanticLabel;
 
   const _TallScreenshotFrame({
     required this.imageAsset,
+    required this.semanticLabel,
     this.width,
     required this.height,
     required this.index,
@@ -306,7 +435,8 @@ class _TallScreenshotFrame extends StatelessWidget {
           ClipRect(
             child: Image.asset(
               imageAsset,
-              fit: BoxFit.cover,
+              semanticLabel: semanticLabel,
+              fit: BoxFit.contain,
               alignment: Alignment.topCenter,
               errorBuilder: (context, error, stackTrace) => Container(
                 color: AppColors.surfaceElevated,
@@ -329,7 +459,7 @@ class _TallScreenshotFrame extends StatelessWidget {
             child: IgnorePointer(
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0x1A000000), width: 1),
+                  border: Border.all(color: Color(0x1A000000), width: 1),
                 ),
               ),
             ),
@@ -344,10 +474,7 @@ class _RectAppButton extends StatefulWidget {
   final String text;
   final VoidCallback onTap;
 
-  const _RectAppButton({
-    required this.text,
-    required this.onTap,
-  });
+  const _RectAppButton({required this.text, required this.onTap});
 
   @override
   State<_RectAppButton> createState() => _RectAppButtonState();
@@ -362,13 +489,20 @@ class _RectAppButtonState extends State<_RectAppButton> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
-          constraints: const BoxConstraints(minHeight: 44),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          duration:
+              WidgetsBinding
+                  .instance
+                  .platformDispatcher
+                  .accessibilityFeatures
+                  .disableAnimations
+              ? Duration.zero
+              : Duration(milliseconds: 140),
+          constraints: BoxConstraints(minHeight: 44),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
             color: _isHovered ? AppColors.surfaceElevated : AppColors.surface,
             border: Border.all(

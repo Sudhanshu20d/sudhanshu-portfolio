@@ -1,3 +1,4 @@
+import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,7 +14,10 @@ class GitHubSection extends StatelessWidget {
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
     try {
-      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
       if (!launched) {
         await launchUrl(uri);
       }
@@ -35,7 +39,9 @@ class GitHubSection extends StatelessWidget {
       case 'Flutter---Offline-Database--Sqlite':
         return 'Local storage experiments with SQLite & Hive';
       default:
-        return originalDesc.length > 50 ? '${originalDesc.substring(0, 48)}...' : originalDesc;
+        return originalDesc.length > 50
+            ? '${originalDesc.substring(0, 48)}...'
+            : originalDesc;
     }
   }
 
@@ -55,7 +61,7 @@ class GitHubSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Section Heading: 05 — GITHUB
-          const SectionTitle(
+          SectionTitle(
             number: '05',
             title: 'GitHub',
             subtitle: 'Code, experiments and projects.',
@@ -84,7 +90,7 @@ class GitHubSection extends StatelessWidget {
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: const Color(0xFF0C0C0E),
+            color: AppColors.surface,
             border: Border.all(color: AppColors.hairline, width: 1.0),
           ),
           child: Column(
@@ -92,8 +98,8 @@ class GitHubSection extends StatelessWidget {
             children: [
               // Terminal Title Bar
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: const BoxDecoration(
+                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
                   color: AppColors.surface,
                   border: Border(bottom: BorderSide(color: AppColors.hairline)),
                 ),
@@ -104,22 +110,28 @@ class GitHubSection extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _buildDot(),
-                        const SizedBox(width: 5),
+                        SizedBox(width: 5),
                         _buildDot(),
-                        const SizedBox(width: 5),
+                        SizedBox(width: 5),
                         _buildDot(),
-                        const SizedBox(width: 10),
+                        SizedBox(width: 10),
                         Text(
                           'gh-cli',
-                          style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textDim),
+                          style: AppTypography.monoLabel(
+                            fontSize: 10,
+                            color: AppColors.textDim,
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Flexible(
                       child: Text(
                         '${PortfolioData.githubUsername}@vapi:~',
-                        style: AppTypography.monoNumber(fontSize: 10, color: AppColors.accent),
+                        style: AppTypography.monoNumber(
+                          fontSize: 10,
+                          color: AppColors.accent,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -129,12 +141,12 @@ class GitHubSection extends StatelessWidget {
 
               // Compact $ gh user view
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildCommandLine('gh user view'),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     _buildMobileUserSpecs(),
                   ],
                 ),
@@ -143,7 +155,7 @@ class GitHubSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 32),
+        SizedBox(height: 32),
 
         // 2. Repositories Section Heading
         Row(
@@ -152,19 +164,25 @@ class GitHubSection extends StatelessWidget {
             Flexible(
               child: Text(
                 'PUBLIC REPOSITORIES',
-                style: AppTypography.monoNumber(fontSize: 11, color: AppColors.accent),
+                style: AppTypography.monoNumber(
+                  fontSize: 11,
+                  color: AppColors.accent,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Text(
               '${PortfolioData.githubRepos.length} REPOS',
-              style: AppTypography.monoLabel(fontSize: 9.5, color: AppColors.textDim),
+              style: AppTypography.monoLabel(
+                fontSize: 9.5,
+                color: AppColors.textDim,
+              ),
             ),
           ],
         ),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Container(width: double.infinity, height: 1, color: AppColors.hairline),
 
         // 3. Clean Editorial Repository Rows (1-2 lines per repo)
@@ -177,7 +195,7 @@ class GitHubSection extends StatelessWidget {
           );
         }),
 
-        const SizedBox(height: 28),
+        SizedBox(height: 28),
 
         // 4. Open GitHub Profile Button
         SizedBox(
@@ -199,29 +217,34 @@ class GitHubSection extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.only(left: 10),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.only(left: 10),
+      decoration: BoxDecoration(
         border: Border(left: BorderSide(color: AppColors.hairline, width: 2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: specs.map((s) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 5.0),
+            padding: EdgeInsets.only(bottom: 5.0),
             child: Row(
               children: [
                 SizedBox(
                   width: 76,
                   child: Text(
                     s['key']!,
-                    style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textDim),
+                    style: AppTypography.monoLabel(
+                      fontSize: 11,
+                      color: AppColors.textDim,
+                    ),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     s['val']!,
-                    style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textPrimary)
-                        .copyWith(fontWeight: FontWeight.w500),
+                    style: AppTypography.monoLabel(
+                      fontSize: 11,
+                      color: AppColors.textPrimary,
+                    ).copyWith(fontWeight: FontWeight.w500),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -240,7 +263,7 @@ class GitHubSection extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF0C0C0E),
+        color: AppColors.surface,
         border: Border.all(color: AppColors.hairline, width: 1.0),
       ),
       child: Column(
@@ -248,8 +271,8 @@ class GitHubSection extends StatelessWidget {
         children: [
           // Terminal Window Title Bar
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: const BoxDecoration(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
               color: AppColors.surface,
               border: Border(bottom: BorderSide(color: AppColors.hairline)),
             ),
@@ -260,20 +283,26 @@ class GitHubSection extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildDot(),
-                    const SizedBox(width: 6),
+                    SizedBox(width: 6),
                     _buildDot(),
-                    const SizedBox(width: 6),
+                    SizedBox(width: 6),
                     _buildDot(),
-                    const SizedBox(width: 14),
+                    SizedBox(width: 14),
                     Text(
                       'gh-cli — session',
-                      style: AppTypography.monoLabel(fontSize: 10.5, color: AppColors.textDim),
+                      style: AppTypography.monoLabel(
+                        fontSize: 10.5,
+                        color: AppColors.textDim,
+                      ),
                     ),
                   ],
                 ),
                 Text(
                   '${PortfolioData.githubUsername}@vapi:~',
-                  style: AppTypography.monoNumber(fontSize: 10.5, color: AppColors.accent),
+                  style: AppTypography.monoNumber(
+                    fontSize: 10.5,
+                    color: AppColors.accent,
+                  ),
                 ),
               ],
             ),
@@ -281,30 +310,30 @@ class GitHubSection extends StatelessWidget {
 
           // Terminal Command Output
           Padding(
-            padding: const EdgeInsets.all(28.0),
+            padding: EdgeInsets.all(28.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // $ gh user view
                 _buildCommandLine('gh user view'),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildDesktopUserTable(),
 
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
 
                 // $ gh repo list
                 _buildCommandLine('gh repo list --public --limit 5'),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildDesktopReposLedger(),
 
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
 
                 // $ gh activity
                 _buildCommandLine('gh activity --verified'),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildDesktopActivityList(),
 
-                const SizedBox(height: 32),
+                SizedBox(height: 32),
 
                 // Action Link
                 _RectGithubButton(
@@ -322,7 +351,7 @@ class GitHubSection extends StatelessWidget {
     return Container(
       width: 7,
       height: 7,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Color(0x40FFFFFF),
         shape: BoxShape.circle,
       ),
@@ -334,13 +363,18 @@ class GitHubSection extends StatelessWidget {
       children: [
         Text(
           '\$ ',
-          style: AppTypography.monoNumber(fontSize: 13, color: AppColors.accent),
+          style: AppTypography.monoNumber(
+            fontSize: 13,
+            color: AppColors.accent,
+          ),
         ),
         Flexible(
           child: Text(
             cmd,
-            style: AppTypography.monoLabel(fontSize: 12.5, color: AppColors.textPrimary)
-                .copyWith(fontWeight: FontWeight.w600),
+            style: AppTypography.monoLabel(
+              fontSize: 12.5,
+              color: AppColors.textPrimary,
+            ).copyWith(fontWeight: FontWeight.w600),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -359,22 +393,25 @@ class GitHubSection extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.only(left: 12),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.only(left: 12),
+      decoration: BoxDecoration(
         border: Border(left: BorderSide(color: AppColors.hairline, width: 2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: fields.map((f) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 5.0),
+            padding: EdgeInsets.only(bottom: 5.0),
             child: Row(
               children: [
                 SizedBox(
                   width: 110,
                   child: Text(
                     f['key']!,
-                    style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textDim),
+                    style: AppTypography.monoLabel(
+                      fontSize: 11,
+                      color: AppColors.textDim,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -382,7 +419,9 @@ class GitHubSection extends StatelessWidget {
                     f['val']!,
                     style: AppTypography.monoLabel(
                       fontSize: 11,
-                      color: f['key'] == 'url' ? AppColors.accent : AppColors.textPrimary,
+                      color: f['key'] == 'url'
+                          ? AppColors.accent
+                          : AppColors.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -412,26 +451,32 @@ class GitHubSection extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.only(left: 12),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.only(left: 12),
+      decoration: BoxDecoration(
         border: Border(left: BorderSide(color: AppColors.hairline, width: 2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: items.map((item) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 6.0),
+            padding: EdgeInsets.only(bottom: 6.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '✓  ',
-                  style: AppTypography.monoNumber(fontSize: 11, color: AppColors.liveGreen),
+                  style: AppTypography.monoNumber(
+                    fontSize: 11,
+                    color: AppColors.liveGreen,
+                  ),
                 ),
                 Expanded(
                   child: Text(
                     item,
-                    style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textMuted),
+                    style: AppTypography.monoLabel(
+                      fontSize: 11,
+                      color: AppColors.textMuted,
+                    ),
                   ),
                 ),
               ],
@@ -470,13 +515,15 @@ class _MobileRepoItemState extends State<_MobileRepoItem> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 4.0),
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: AppColors.hairline, width: 0.8)),
+          padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 4.0),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: AppColors.hairline, width: 0.8),
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,12 +538,14 @@ class _MobileRepoItemState extends State<_MobileRepoItem> {
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
                         letterSpacing: -0.4,
-                        color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                        color: _isHovered
+                            ? AppColors.accent
+                            : AppColors.textPrimary,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Text(
                     '${widget.tag} ↗',
                     style: AppTypography.monoLabel(
@@ -506,7 +555,7 @@ class _MobileRepoItemState extends State<_MobileRepoItem> {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(
                 widget.description,
                 style: AppTypography.bodySmall(color: AppColors.textMuted),
@@ -537,7 +586,10 @@ class _DesktopRepoRowState extends State<_DesktopRepoRow> {
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
     try {
-      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
       if (!launched) {
         await launchUrl(uri);
       }
@@ -552,15 +604,24 @@ class _DesktopRepoRowState extends State<_DesktopRepoRow> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: () => _launchUrl(widget.repo.url),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+          duration:
+              WidgetsBinding
+                  .instance
+                  .platformDispatcher
+                  .accessibilityFeatures
+                  .disableAnimations
+              ? Duration.zero
+              : Duration(milliseconds: 120),
+          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
           decoration: BoxDecoration(
-            color: _isHovered ? const Color(0x1AD2F832) : Colors.transparent,
-            border: const Border(bottom: BorderSide(color: AppColors.hairline, width: 0.6)),
+            color: _isHovered ? AppColors.accentSubtle : Colors.transparent,
+            border: Border(
+              bottom: BorderSide(color: AppColors.hairline, width: 0.6),
+            ),
           ),
           child: Row(
             children: [
@@ -570,20 +631,25 @@ class _DesktopRepoRowState extends State<_DesktopRepoRow> {
                   widget.repo.name,
                   style: AppTypography.monoLabel(
                     fontSize: 12,
-                    color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                    color: _isHovered
+                        ? AppColors.accent
+                        : AppColors.textPrimary,
                   ).copyWith(fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16),
               Expanded(
                 child: Text(
                   widget.repo.description,
-                  style: AppTypography.monoLabel(fontSize: 11, color: AppColors.textMuted),
+                  style: AppTypography.monoLabel(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16),
               Text(
                 '[ ${widget.repo.badge} ↗ ]',
                 style: AppTypography.monoNumber(
@@ -617,13 +683,20 @@ class _RectGithubButtonState extends State<_RectGithubButton> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
-          constraints: const BoxConstraints(minHeight: 44),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          duration:
+              WidgetsBinding
+                  .instance
+                  .platformDispatcher
+                  .accessibilityFeatures
+                  .disableAnimations
+              ? Duration.zero
+              : Duration(milliseconds: 140),
+          constraints: BoxConstraints(minHeight: 44),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
             color: _isHovered ? AppColors.surfaceElevated : AppColors.surface,
             border: Border.all(
@@ -636,14 +709,20 @@ class _RectGithubButtonState extends State<_RectGithubButton> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const FaIcon(FontAwesomeIcons.github, size: 14, color: AppColors.accent),
-              const SizedBox(width: 8),
+              FaIcon(
+                FontAwesomeIcons.github,
+                size: 14,
+                color: AppColors.accent,
+              ),
+              SizedBox(width: 8),
               Flexible(
                 child: Text(
                   'OPEN GITHUB PROFILE ↗',
                   style: AppTypography.monoLabel(
                     fontSize: 11.5,
-                    color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                    color: _isHovered
+                        ? AppColors.accent
+                        : AppColors.textPrimary,
                     letterSpacing: 0.5,
                   ).copyWith(fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,

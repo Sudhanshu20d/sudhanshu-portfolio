@@ -1,3 +1,4 @@
+import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,7 +20,10 @@ class _ContactSectionState extends State<ContactSection> {
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
     try {
-      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
       if (!launched) {
         await launchUrl(uri);
       }
@@ -29,21 +33,23 @@ class _ContactSectionState extends State<ContactSection> {
   }
 
   void _copyEmail() {
-    Clipboard.setData(const ClipboardData(text: PortfolioData.email));
+    Clipboard.setData(ClipboardData(text: PortfolioData.email));
     setState(() => _copied = true);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           'Email copied to clipboard (${PortfolioData.email})',
-          style: AppTypography.monoLabel(color: const Color(0xFF0B0B0E)).copyWith(fontWeight: FontWeight.w600),
+          style: AppTypography.monoLabel(
+            color: Color(0xFF0B0B0E),
+          ).copyWith(fontWeight: FontWeight.w600),
         ),
         backgroundColor: AppColors.accent,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: 3),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       ),
     );
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 3), () {
       if (mounted) setState(() => _copied = false);
     });
   }
@@ -100,13 +106,13 @@ class _ContactSectionState extends State<ContactSection> {
                 Text(
                   'Have an idea',
                   style: AppTypography.displayHeading(
-                    fontSize: isMobile ? 48 : 84,
+                    fontSize: isMobile ? 56 : 116,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: -2.0,
+                    letterSpacing: -4.0,
                     height: 1.0,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
                   'worth building?',
                   style: AppTypography.editorialItalic(
@@ -126,18 +132,20 @@ class _ContactSectionState extends State<ContactSection> {
             cursor: SystemMouseCursors.click,
             onEnter: (_) => setState(() => _isTalkHovered = true),
             onExit: (_) => setState(() => _isTalkHovered = false),
-            child: GestureDetector(
+            child: AccessibleAction(
               onTap: () => _launchUrl('mailto:${PortfolioData.email}'),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: _isTalkHovered ? AppColors.accent : AppColors.accent.withValues(alpha: 0.6),
+                      color: _isTalkHovered
+                          ? AppColors.accent
+                          : AppColors.accent.withValues(alpha: 0.6),
                       width: 2.0,
                     ),
                   ),
                 ),
-                padding: const EdgeInsets.only(bottom: 6.0),
+                padding: EdgeInsets.only(bottom: 6.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -145,7 +153,9 @@ class _ContactSectionState extends State<ContactSection> {
                       "Let's talk →",
                       style: AppTypography.displayHeading(
                         fontSize: isMobile ? 24 : 36,
-                        color: _isTalkHovered ? AppColors.accent : AppColors.textPrimary,
+                        color: _isTalkHovered
+                            ? AppColors.accent
+                            : AppColors.textPrimary,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.5,
                       ),
@@ -161,11 +171,13 @@ class _ContactSectionState extends State<ContactSection> {
           // Direct Email Address (Click to mail / copy)
           MouseRegion(
             cursor: SystemMouseCursors.click,
-            child: GestureDetector(
+            child: AccessibleAction(
               onTap: _copyEmail,
               child: Container(
-                constraints: BoxConstraints(maxWidth: isMobile ? screenWidth - 36 : 460),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                constraints: BoxConstraints(
+                  maxWidth: isMobile ? screenWidth - 36 : 460,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   border: Border.all(
@@ -186,7 +198,7 @@ class _ContactSectionState extends State<ContactSection> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10),
                     Text(
                       _copied ? '[ COPIED ]' : '[ COPY ]',
                       style: AppTypography.monoNumber(
@@ -211,14 +223,17 @@ class _ContactSectionState extends State<ContactSection> {
                 label: 'GITHUB',
                 onTap: () => _launchUrl(PortfolioData.githubUrl),
               ),
+              Text('|', style: AppTypography.monoLabel()),
               _MinimalSocialLink(
                 label: 'LINKEDIN',
                 onTap: () => _launchUrl(PortfolioData.linkedinUrl),
               ),
+              Text('|', style: AppTypography.monoLabel()),
               _MinimalSocialLink(
                 label: 'INSTAGRAM',
                 onTap: () => _launchUrl(PortfolioData.instagramUrl),
               ),
+              Text('|', style: AppTypography.monoLabel()),
               _MinimalSocialLink(
                 label: 'X',
                 onTap: () => _launchUrl(PortfolioData.twitterUrl),
@@ -235,10 +250,7 @@ class _MinimalSocialLink extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _MinimalSocialLink({
-    required this.label,
-    required this.onTap,
-  });
+  const _MinimalSocialLink({required this.label, required this.onTap});
 
   @override
   State<_MinimalSocialLink> createState() => _MinimalSocialLinkState();
@@ -253,7 +265,7 @@ class _MinimalSocialLinkState extends State<_MinimalSocialLink> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         onTap: widget.onTap,
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -266,7 +278,7 @@ class _MinimalSocialLinkState extends State<_MinimalSocialLink> {
                 letterSpacing: 1.5,
               ).copyWith(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
             Text(
               '↗',
               style: AppTypography.monoNumber(

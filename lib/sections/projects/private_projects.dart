@@ -1,3 +1,5 @@
+import '../../core/widgets/work_hover_group.dart';
+import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/portfolio_data.dart';
@@ -19,67 +21,79 @@ class PrivateProjectsSection extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.surfaceElevated,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.all(32),
-          decoration: const BoxDecoration(
+          padding: EdgeInsets.all(32),
+          decoration: BoxDecoration(
             border: Border(top: BorderSide(color: AppColors.accent, width: 2)),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${project['id']} / SELECTED PROJECT',
-                    style: AppTypography.monoNumber(fontSize: 12, color: AppColors.accent),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.textPrimary),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                project['title']!,
-                style: AppTypography.displayHeading(fontSize: 36),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                project['description']!,
-                style: AppTypography.bodyLead(),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.hairline),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${project['id']} / SELECTED PROJECT',
+                      style: AppTypography.monoNumber(
+                        fontSize: 12,
+                        color: AppColors.accent,
+                      ),
                     ),
-                    child: Text(
-                      'TECH: ${project['tag']}',
-                      style: AppTypography.monoLabel(fontSize: 11, color: AppColors.accent),
+                    IconButton(
+                      icon: Icon(Icons.close, color: AppColors.textPrimary),
+                      onPressed: () => Navigator.pop(context),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  TextButton(
-                    onPressed: () => _launchUrl(project['url']!),
-                    child: Text(
-                      'View on GitHub ↗',
-                      style: AppTypography.monoLabel(fontSize: 12, color: AppColors.textPrimary)
-                          .copyWith(fontWeight: FontWeight.w600),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Text(
+                  project['title']!,
+                  style: AppTypography.displayHeading(fontSize: 36),
+                ),
+                SizedBox(height: 12),
+                Text(project['description']!, style: AppTypography.bodyLead()),
+                SizedBox(height: 24),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.hairline),
+                      ),
+                      child: Text(
+                        'TECH: ${project['tag']}',
+                        style: AppTypography.monoLabel(
+                          fontSize: 11,
+                          color: AppColors.accent,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(width: 16),
+                    TextButton(
+                      onPressed: () => _launchUrl(project['url']!),
+                      child: Text(
+                        'View on GitHub ↗',
+                        style: AppTypography.monoLabel(
+                          fontSize: 12,
+                          color: AppColors.textPrimary,
+                        ).copyWith(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -102,7 +116,7 @@ class PrivateProjectsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Section Heading: 02  Selected projects
-          const SectionTitle(
+          SectionTitle(
             number: '02',
             title: 'Selected projects',
             subtitle:
@@ -119,16 +133,18 @@ class PrivateProjectsSection extends StatelessWidget {
           ),
 
           // Editorial List Rows matching Screenshot 1
-          ...PortfolioData.selectedProjects.map((project) {
-            return _EditorialListRow(
-              index: project['id']!,
-              title: project['title']!,
-              description: project['description']!,
-              tag: '${project['tag']} ↗',
-              isMobile: isMobile,
-              onTap: () => _showProjectModal(context, project),
-            );
-          }),
+          WorkHoverGroup(
+            children: PortfolioData.selectedProjects.map((project) {
+              return _EditorialListRow(
+                index: project['id']!,
+                title: project['title']!,
+                description: project['description']!,
+                tag: '${project['tag']} / — ↗',
+                isMobile: isMobile,
+                onTap: () => _showProjectModal(context, project),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
@@ -165,14 +181,23 @@ class _EditorialListRowState extends State<_EditorialListRow> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: AccessibleAction(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
+          duration:
+              WidgetsBinding
+                  .instance
+                  .platformDispatcher
+                  .accessibilityFeatures
+                  .disableAnimations
+              ? Duration.zero
+              : Duration(milliseconds: 140),
           decoration: BoxDecoration(
-            color: _isHovered ? AppColors.surfaceElevated.withValues(alpha: 0.5) : Colors.transparent,
-            border: const Border(
+            color: _isHovered
+                ? AppColors.surfaceElevated.withValues(alpha: 0.5)
+                : Colors.transparent,
+            border: Border(
               bottom: BorderSide(color: AppColors.hairline, width: 1.0),
             ),
           ),
@@ -192,30 +217,36 @@ class _EditorialListRowState extends State<_EditorialListRow> {
                           widget.index,
                           style: AppTypography.monoNumber(
                             fontSize: 12,
-                            color: _isHovered ? AppColors.accent : AppColors.textDim,
+                            color: _isHovered
+                                ? AppColors.accent
+                                : AppColors.textDim,
                           ),
                         ),
                         Text(
                           widget.tag,
                           style: AppTypography.monoLabel(
                             fontSize: 11,
-                            color: _isHovered ? AppColors.accent : AppColors.textMuted,
+                            color: _isHovered
+                                ? AppColors.accent
+                                : AppColors.textMuted,
                             letterSpacing: 1.0,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Text(
                       widget.title,
                       style: AppTypography.displayHeading(
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
                         letterSpacing: -0.8,
-                        color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                        color: _isHovered
+                            ? AppColors.accent
+                            : AppColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Text(
                       widget.description,
                       style: AppTypography.bodyMedium(
@@ -234,30 +265,34 @@ class _EditorialListRowState extends State<_EditorialListRow> {
                         widget.index,
                         style: AppTypography.monoNumber(
                           fontSize: 14,
-                          color: _isHovered ? AppColors.accent : AppColors.textDim,
+                          color: _isHovered
+                              ? AppColors.accent
+                              : AppColors.textDim,
                         ),
                       ),
                     ),
 
                     // Title
                     Expanded(
-                      flex: 4,
+                      flex: 7,
                       child: Text(
                         widget.title,
                         style: AppTypography.displayHeading(
-                          fontSize: 34,
+                          fontSize: 56,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -1.0,
-                          color: _isHovered ? AppColors.accent : AppColors.textPrimary,
+                          color: _isHovered
+                              ? AppColors.accent
+                              : AppColors.textPrimary,
                         ),
                       ),
                     ),
 
-                    const SizedBox(width: 24),
+                    SizedBox(width: 24),
 
                     // Description
                     Expanded(
-                      flex: 6,
+                      flex: 4,
                       child: Text(
                         widget.description,
                         style: AppTypography.bodyLarge(
@@ -266,14 +301,16 @@ class _EditorialListRowState extends State<_EditorialListRow> {
                       ),
                     ),
 
-                    const SizedBox(width: 24),
+                    SizedBox(width: 24),
 
                     // Tag FLUTTER ↗
                     Text(
                       widget.tag,
                       style: AppTypography.monoLabel(
                         fontSize: 12,
-                        color: _isHovered ? AppColors.accent : AppColors.textMuted,
+                        color: _isHovered
+                            ? AppColors.accent
+                            : AppColors.textMuted,
                         letterSpacing: 1.2,
                       ).copyWith(fontWeight: FontWeight.w500),
                     ),

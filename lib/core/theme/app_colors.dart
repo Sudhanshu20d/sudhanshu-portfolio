@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 
+/// Flutter equivalents of the web shell's CSS custom properties.
 class AppColors {
   AppColors._();
-
-  // Backgrounds - Near-black editorial canvas
-  static const Color background = Color(0xFF09090A);
-  static const Color surface = Color(0xFF111113);
-  static const Color surfaceElevated = Color(0xFF161618);
-  static const Color surfaceGlass = Color(0xF209090A);
-
-  // Editorial Typography
-  static const Color textPrimary = Color(0xFFF3F1EB); // Warm ivory / cream
-  static const Color textMuted = Color(0xFF8E8C85);   // Muted editorial warm grey
-  static const Color textDim = Color(0xFF56544E);     // Subtle technical graphite
-
-  // Single Controlled Accent - Acid / Lime Green
-  static const Color accent = Color(0xFFD2F832);      // Acid/lime green
-  static const Color accentSubtle = Color(0x1FD2F832);
-
-  // Hairline Rules & Editorial Dividers
-  static const Color border = Color(0x1AFFFFFF);       // Subtle dark grey hairline
-  static const Color borderLight = Color(0x2EFFFFFF);
-  static const Color borderAccent = Color(0x40D2F832);
-  static const Color hairline = Color(0x14FFFFFF);
-
-  // Subtle Status Accents
-  static const Color liveGreen = Color(0xFFD2F832);
-  static const Color privateAmber = Color(0xFFE5A93C);
+  static bool get isLight =>
+      WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+      Brightness.light;
+  static Color get background =>
+      isLight ? const Color(0xFFEFEFEC) : const Color(0xFF0B0B0C);
+  static Color get surface =>
+      isLight ? const Color(0xFFE8E8E5) : const Color(0xFF111113);
+  static Color get surfaceElevated =>
+      isLight ? const Color(0xFFDFDFDC) : const Color(0xFF171719);
+  static Color get surfaceGlass => background.withValues(alpha: 0.96);
+  static Color get textPrimary =>
+      isLight ? const Color(0xFF0B0B0C) : const Color(0xFFEDEDED);
+  static const Color textMuted = Color(0xFF7D7D83);
+  static Color get textDim =>
+      isLight ? const Color(0xFF65656B) : const Color(0xFF95959B);
+  static const Color accent = Color(0xFFFF4B1F);
+  static const Color accentSubtle = Color(0x1FFF4B1F);
+  static Color get border =>
+      isLight ? const Color(0xFFD0D0CD) : const Color(0xFF222225);
+  static Color get borderLight =>
+      isLight ? const Color(0xFFBDBDBA) : const Color(0xFF38383D);
+  static const Color borderAccent = Color(0x66FF4B1F);
+  static Color get hairline => border;
+  static const Color liveGreen = accent;
+  static const Color privateAmber = accent;
 }

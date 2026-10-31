@@ -1,3 +1,4 @@
+import '../../core/widgets/luxury_badge.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../core/theme/app_colors.dart';
@@ -23,11 +24,7 @@ class AboutSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Section Heading: 03  About
-          const SectionTitle(
-            number: '03',
-            title: 'About',
-            subtitle: null,
-          ),
+          SectionTitle(number: '03', title: 'About', subtitle: null),
 
           SizedBox(height: isMobile ? 32 : 56),
 
@@ -36,10 +33,39 @@ class AboutSection extends StatelessWidget {
             _buildMobileLayout(context)
           else
             _buildDesktopLayout(context),
+          SizedBox(height: 32),
+          Wrap(
+            spacing: 8,
+            runSpacing: 10,
+            children: PortfolioData.skills
+                .map((skill) => LuxuryBadge(label: skill['name'] as String))
+                .toList(),
+          ),
         ],
       ),
     );
   }
+
+  Widget _statement(double size) => Text.rich(
+    TextSpan(
+      children: [
+        TextSpan(text: 'A '),
+        TextSpan(
+          text: 'Flutter',
+          style: TextStyle(color: AppColors.accent),
+        ),
+        TextSpan(
+          text:
+              ' developer from Vapi, Gujarat, who cares about how an app feels once it’s in someone’s hand.',
+        ),
+      ],
+    ),
+    style: AppTypography.displayHeading(
+      fontSize: size,
+      height: 1.1,
+      letterSpacing: -size * 0.05,
+    ),
+  );
 
   Widget _buildDesktopLayout(BuildContext context) {
     return Column(
@@ -62,7 +88,7 @@ class AboutSection extends StatelessWidget {
                       letterSpacing: 2.0,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
                     'FIG. 02 — WORKING PORTRAIT',
                     style: AppTypography.monoLabel(
@@ -71,11 +97,11 @@ class AboutSection extends StatelessWidget {
                       letterSpacing: 1.5,
                     ).copyWith(fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
 
                   // Technical note / philosophy block
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: AppColors.surface,
                       border: Border.all(color: AppColors.hairline),
@@ -85,13 +111,28 @@ class AboutSection extends StatelessWidget {
                       children: [
                         Text(
                           'CORE DISCIPLINES',
-                          style: AppTypography.monoNumber(fontSize: 10, color: AppColors.accent),
+                          style: AppTypography.monoNumber(
+                            fontSize: 10,
+                            color: AppColors.accent,
+                          ),
                         ),
-                        const SizedBox(height: 12),
-                        _buildDisciplineItem('01', 'Cross-Platform Dart & Flutter Engine'),
-                        _buildDisciplineItem('02', 'State Architecture (BLoC & Provider)'),
-                        _buildDisciplineItem('03', 'Offline Persistence (Hive & SQLite)'),
-                        _buildDisciplineItem('04', 'Production Store Deployment (Play & iOS)'),
+                        SizedBox(height: 12),
+                        _buildDisciplineItem(
+                          '01',
+                          'Cross-Platform Dart & Flutter Engine',
+                        ),
+                        _buildDisciplineItem(
+                          '02',
+                          'State Architecture (BLoC & Provider)',
+                        ),
+                        _buildDisciplineItem(
+                          '03',
+                          'Offline Persistence (Hive & SQLite)',
+                        ),
+                        _buildDisciplineItem(
+                          '04',
+                          'Production Store Deployment (Play & iOS)',
+                        ),
                       ],
                     ),
                   ),
@@ -99,7 +140,7 @@ class AboutSection extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(width: 56),
+            SizedBox(width: 56),
 
             // Right Column: Large Quote + Narrative Bio
             Expanded(
@@ -108,16 +149,9 @@ class AboutSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Large quote in Newsreader italic serif
-                  Text(
-                    'A Flutter developer from Vapi, Gujarat, who cares about how an app feels once it’s in someone’s hand.',
-                    style: AppTypography.editorialItalic(
-                      fontSize: 38,
-                      color: AppColors.textPrimary,
-                      height: 1.28,
-                    ),
-                  ),
+                  _statement(52),
 
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
 
                   // Factual Bio
                   Text(
@@ -133,7 +167,7 @@ class AboutSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 64),
+        SizedBox(height: 64),
 
         // Specs Row / Metadata Table (ROLE, BASED, EDUCATION, CURRENT LAB)
         _buildMetadataSpecsRow(isMobile: false),
@@ -155,19 +189,12 @@ class AboutSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // Large Quote
-        Text(
-          'A Flutter developer from Vapi, Gujarat, who cares about how an app feels once it’s in someone’s hand.',
-          style: AppTypography.editorialItalic(
-            fontSize: 26,
-            color: AppColors.textPrimary,
-            height: 1.3,
-          ),
-        ),
+        _statement(32),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // Bio paragraph
         Text(
@@ -178,7 +205,7 @@ class AboutSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 32),
+        SizedBox(height: 32),
 
         // Mobile Specs
         _buildMetadataSpecsRow(isMobile: true),
@@ -197,8 +224,8 @@ class AboutSection extends StatelessWidget {
     if (isMobile) {
       return Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
           border: Border(
             top: BorderSide(color: AppColors.hairline),
             bottom: BorderSide(color: AppColors.hairline),
@@ -215,13 +242,17 @@ class AboutSection extends StatelessWidget {
                 children: [
                   Text(
                     s['label']!,
-                    style: AppTypography.monoLabel(fontSize: 10, color: AppColors.textDim),
+                    style: AppTypography.monoLabel(
+                      fontSize: 10,
+                      color: AppColors.textDim,
+                    ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     s['value']!,
-                    style: AppTypography.bodySmall(color: AppColors.textPrimary)
-                        .copyWith(fontWeight: FontWeight.w600),
+                    style: AppTypography.bodySmall(
+                      color: AppColors.textPrimary,
+                    ).copyWith(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -233,8 +264,8 @@ class AboutSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.symmetric(vertical: 24),
+      decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: AppColors.hairline),
           bottom: BorderSide(color: AppColors.hairline),
@@ -248,9 +279,12 @@ class AboutSection extends StatelessWidget {
               children: [
                 Text(
                   s['label']!,
-                  style: AppTypography.monoLabel(fontSize: 10.5, color: AppColors.textDim),
+                  style: AppTypography.monoLabel(
+                    fontSize: 10.5,
+                    color: AppColors.textDim,
+                  ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
                   s['value']!,
                   style: AppTypography.bodyMedium(
@@ -268,15 +302,18 @@ class AboutSection extends StatelessWidget {
 
   Widget _buildDisciplineItem(String number, String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: EdgeInsets.only(bottom: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             number,
-            style: AppTypography.monoNumber(fontSize: 10, color: AppColors.accent),
+            style: AppTypography.monoNumber(
+              fontSize: 10,
+              color: AppColors.accent,
+            ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: Text(
               text,

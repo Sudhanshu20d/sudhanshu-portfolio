@@ -18,7 +18,8 @@ class MarqueeStrip extends StatefulWidget {
   State<MarqueeStrip> createState() => _MarqueeStripState();
 }
 
-class _MarqueeStripState extends State<MarqueeStrip> with SingleTickerProviderStateMixin {
+class _MarqueeStripState extends State<MarqueeStrip>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -26,8 +27,18 @@ class _MarqueeStripState extends State<MarqueeStrip> with SingleTickerProviderSt
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 30),
+      duration: Duration(seconds: 30),
     )..repeat();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.stop();
+    } else {
+      _controller.repeat();
+    }
   }
 
   @override
@@ -38,11 +49,23 @@ class _MarqueeStripState extends State<MarqueeStrip> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return Padding(
+        padding: EdgeInsets.all(20),
+        child: Wrap(
+          spacing: 18,
+          runSpacing: 10,
+          children: widget.items
+              .map((item) => Text(item, style: AppTypography.monoLabel()))
+              .toList(),
+        ),
+      );
+    }
     return Container(
       height: widget.height,
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFF0D0D11),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
         border: Border.symmetric(
           horizontal: BorderSide(color: AppColors.border, width: 1),
         ),
@@ -61,10 +84,7 @@ class _MarqueeStripState extends State<MarqueeStrip> with SingleTickerProviderSt
                 translation: Offset(-_controller.value * 0.5, 0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildContent(),
-                    _buildContent(),
-                  ],
+                  children: [_buildContent(), _buildContent()],
                 ),
               );
             },
@@ -80,7 +100,7 @@ class _MarqueeStripState extends State<MarqueeStrip> with SingleTickerProviderSt
       children: widget.items.map((item) {
         final isDot = item == '•';
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14.0),
+          padding: EdgeInsets.symmetric(horizontal: 14.0),
           child: Text(
             item,
             style: isDot
