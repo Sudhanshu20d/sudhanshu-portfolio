@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LetterReveal extends StatefulWidget {
   final String text;
   final TextStyle style;
-  LetterReveal(this.text, {super.key, required this.style});
+  const LetterReveal(this.text, {super.key, required this.style});
   @override
   State<LetterReveal> createState() => _LetterRevealState();
 }
@@ -53,7 +53,15 @@ class _LetterRevealState extends State<LetterReveal>
                   ),
                   child: Opacity(
                     opacity: t,
-                    child: Text(widget.text[i], style: widget.style),
+                    child: Text(
+                      widget.text[i],
+                      style: widget.style,
+                      // Tight headline leading must not crop glyph descenders.
+                      textHeightBehavior: const TextHeightBehavior(
+                        applyHeightToFirstAscent: false,
+                        applyHeightToLastDescent: false,
+                      ),
+                    ),
                   ),
                 );
               }),

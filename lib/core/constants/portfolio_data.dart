@@ -12,7 +12,7 @@ class PortfolioData {
   static const String headline = 'CRAFTING RESILIENT MOBILE EXPERIENCES';
   static const String location = 'Vapi, Gujarat, India';
   static const String company = 'RND Technosoft';
-  static const String previousCompany = 'AGB Software';
+  static const String previousCompany = 'Suess Innovative';
   static const String email = 'about.sudhanshu@gmail.com';
   static const String githubUsername = 'Sudhanshu20d';
 
@@ -25,7 +25,8 @@ class PortfolioData {
   static const String resumeUrl = 'resume.pdf';
 
   // Images
-  static const String portraitAsset = 'assets/images/portrait/sudhanshu.jpg';
+  static const String portraitAsset =
+      'assets/images/portrait/sudhanshu-enhanced-v1.jpg';
   static const String githubAvatarAsset =
       'assets/images/portrait/github_avatar.png';
 
@@ -42,7 +43,7 @@ class PortfolioData {
       'I build production-ready Flutter applications focused on performance, clean architecture, scalable APIs and delightful user experience.';
 
   static const String aboutBio =
-      'Specialized in architecting high-performance cross-platform mobile apps for Android and iOS using Flutter and Dart. With experience shipping consumer applications on the Google Play Store as well as building dedicated enterprise distribution tools at RND Technosoft and AGB Software, I turn product requirements into fluid, 60fps user experiences with clean state management and modular architecture.';
+      'I build cross-platform mobile apps for Android and iOS using Flutter and Dart. I work full-time at RND Technosoft, take on freelance projects with AGB Software, and previously worked at Suess Innovative. My focus is on responsive interfaces, clean architecture, and dependable mobile experiences.';
 
   // Experience Timeline
   static const List<ExperienceModel> experiences = [
@@ -51,7 +52,7 @@ class PortfolioData {
       company: 'RND Technosoft',
       role: 'Flutter Developer',
       location: 'Vapi, Gujarat, India',
-      status: 'CURRENT',
+      status: 'FULL-TIME',
       summary:
           'Engineering production Flutter mobile applications, integrating complex REST APIs, state management architectures, and delivering published consumer and commercial applications to the Google Play Store.',
       technologies: [
@@ -68,9 +69,9 @@ class PortfolioData {
       company: 'AGB Software',
       role: 'Flutter App Developer',
       location: 'India',
-      status: 'PREVIOUS',
+      status: 'FREELANCE',
       summary:
-          'Developed responsive cross-platform user interfaces, local storage workflows, and mobile application modules with clean Dart codebases and team collaboration.',
+          'Working with AGB Software on freelance Flutter mobile application projects.',
       technologies: [
         'Flutter',
         'Dart',
@@ -78,6 +79,16 @@ class PortfolioData {
         'Responsive UI',
         'Git',
       ],
+    ),
+    ExperienceModel(
+      index: '03',
+      company: 'Suess Innovative',
+      role: 'Flutter Developer',
+      location: 'India',
+      status: 'PREVIOUS',
+      summary:
+          'Previously worked at Suess Innovative on mobile application development.',
+      technologies: ['Flutter', 'Dart'],
     ),
   ];
 

@@ -54,7 +54,6 @@ class HeroSection extends StatefulWidget {
 
 class _HeroSectionState extends State<HeroSection>
     with SingleTickerProviderStateMixin {
-  bool _portraitHovered = false;
   late final AnimationController _revealController;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _slideAnimation;
@@ -428,76 +427,24 @@ class _HeroSectionState extends State<HeroSection>
                   border: Border.all(color: AppColors.border, width: 0.8),
                 ),
                 child: ClipRect(
-                  child: MouseRegion(
-                    onEnter: (_) => setState(() => _portraitHovered = true),
-                    onExit: (_) => setState(() => _portraitHovered = false),
-                    child: ColorFiltered(
-                      colorFilter: ColorFilter.matrix(
-                        _portraitHovered
-                            ? <double>[
-                                0.2126,
-                                0.7152,
-                                0.0722,
-                                0,
-                                0,
-                                0.0625,
-                                0.2104,
-                                0.0212,
-                                0,
-                                0,
-                                0.0258,
-                                0.0869,
-                                0.0088,
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                1,
-                                0,
-                              ]
-                            : <double>[
-                                0.2126,
-                                0.7152,
-                                0.0722,
-                                0,
-                                0,
-                                0.2126,
-                                0.7152,
-                                0.0722,
-                                0,
-                                0,
-                                0.2126,
-                                0.7152,
-                                0.0722,
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                1,
-                                0,
-                              ],
-                      ),
-                      child: Image.asset(
-                        PortfolioData.portraitAsset,
-                        semanticLabel: PortfolioData.name,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: AppColors.surfaceElevated,
-                            child: Center(
-                              child: Icon(
-                                Icons.person,
-                                size: 64,
-                                color: AppColors.textDim,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                  child: Image.asset(
+                    PortfolioData.portraitAsset,
+                    semanticLabel: PortfolioData.name,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                    alignment: Alignment.topCenter,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: AppColors.surfaceElevated,
+                        child: Center(
+                          child: Icon(
+                            Icons.person,
+                            size: 64,
+                            color: AppColors.textDim,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

@@ -71,7 +71,7 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
 
   @override
   Widget build(BuildContext context) {
-    final isCurrent = widget.experience.status == 'CURRENT';
+    final isCurrent = widget.experience.status == 'FULL-TIME';
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -126,12 +126,12 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
               SizedBox(height: 6),
               if (isCurrent)
                 LuxuryBadge(
-                  label: 'CURRENT ROLE',
+                  label: widget.experience.status,
                   dotColor: AppColors.liveGreen,
                 )
               else
                 Text(
-                  'PREVIOUS',
+                  widget.experience.status,
                   style: AppTypography.monoLabel(
                     fontSize: 10,
                     color: AppColors.textDim,
@@ -221,10 +221,13 @@ class _EditorialExperienceRowState extends State<_EditorialExperienceRow> {
               ),
             ),
             if (isCurrent)
-              LuxuryBadge(label: 'CURRENT ROLE', dotColor: AppColors.liveGreen)
+              LuxuryBadge(
+                label: widget.experience.status,
+                dotColor: AppColors.liveGreen,
+              )
             else
               Text(
-                'PREVIOUS',
+                widget.experience.status,
                 style: AppTypography.monoLabel(
                   fontSize: 10,
                   color: AppColors.textDim,

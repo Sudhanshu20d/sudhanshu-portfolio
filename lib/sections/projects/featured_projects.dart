@@ -1,4 +1,3 @@
-import '../../core/widgets/work_hover_group.dart';
 import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -52,16 +51,7 @@ class FeaturedProjectsSection extends StatelessWidget {
           SizedBox(height: isMobile ? 36 : 64),
 
           // Apps Editorial Showcases
-          WorkHoverGroup(
-            previews: PortfolioData.publishedProjects
-                .map(
-                  (p) =>
-                      (p.iosScreenshotAssets.isNotEmpty
-                              ? p.iosScreenshotAssets
-                              : p.screenshotAssets)
-                          .firstOrNull,
-                )
-                .toList(),
+          Column(
             children: PortfolioData.publishedProjects.asMap().entries.map((
               entry,
             ) {

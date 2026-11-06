@@ -1,4 +1,3 @@
-import '../../core/widgets/work_hover_group.dart';
 import '../../core/widgets/accessible_action.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -133,7 +132,7 @@ class PrivateProjectsSection extends StatelessWidget {
           ),
 
           // Editorial List Rows matching Screenshot 1
-          WorkHoverGroup(
+          Column(
             children: PortfolioData.selectedProjects.map((project) {
               return _EditorialListRow(
                 index: project['id']!,
